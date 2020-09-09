@@ -1,6 +1,7 @@
 package ro.ugal.learnromanian.response;
 
 public class GenericResponse {
+
     protected boolean successStatus;
     protected String message;
 

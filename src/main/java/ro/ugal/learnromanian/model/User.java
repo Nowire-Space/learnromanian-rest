@@ -26,24 +26,30 @@ public class User {
     @Column(name="user_email")
     protected String userEmail;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_role_id")
+    protected Role role;
+
     public User() {
     }
 
-    public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail) {
+    public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail, Role role) {
         this.userName = userName;
         this.userFamilyName = userFamilyName;
         this.userPassword = userPassword;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
+        this.role = role;
     }
 
-    public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail) {
+    public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail, Role role) {
         this.userId = userId;
         this.userName = userName;
         this.userFamilyName = userFamilyName;
         this.userPassword = userPassword;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
+        this.role = role;
     }
 
     public Integer getUserId() {
@@ -94,15 +100,25 @@ public class User {
         this.userEmail = userEmail;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", userFamilyName='" + userFamilyName + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", userPhoneNumber='" + userPhoneNumber + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                '}';
+        final StringBuffer sb = new StringBuffer("User{");
+        sb.append("userId=").append(userId);
+        sb.append(", userName='").append(userName).append('\'');
+        sb.append(", userFamilyName='").append(userFamilyName).append('\'');
+        sb.append(", userPassword='").append(userPassword).append('\'');
+        sb.append(", userPhoneNumber='").append(userPhoneNumber).append('\'');
+        sb.append(", userEmail='").append(userEmail).append('\'');
+        sb.append(", role=").append(role);
+        sb.append('}');
+        return sb.toString();
     }
 }
