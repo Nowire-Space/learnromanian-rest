@@ -12,7 +12,7 @@
 	<artifactId>learnromanian-rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>learnromanian-rest</name>
-	<description>REST project for "Learn Romanian" application</description>
+	<description>REST API for "Learn Romanian" application</description>
 
 	<properties>
 		<java.version>1.8</java.version>

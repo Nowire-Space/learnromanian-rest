@@ -29,7 +29,7 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
         String password = authentication.getCredentials().toString();
 
         User user = userRepository.findByUserEmail(username);
-        if(user != null && encoder.matches(password, password)) {
+        if(user != null && encoder.matches(password, user.getUserPassword())) {
             return new UsernamePasswordAuthenticationToken(username, password,
                     Arrays.asList(new SimpleGrantedAuthority(user.getRole().getRoleName())));
         } else {

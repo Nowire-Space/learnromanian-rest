@@ -15,17 +15,6 @@ public class UserRestController {
     @Autowired
     private UserRepository userRepository;
 
-//    @GetMapping(path = "/get/{userId}")
-//    public UserGenericResponse getUserById(@PathVariable String userId){
-//        if(userRepository.existsByUserId(Integer.valueOf(userId))){
-//            return new UserGenericResponse(true, Message.userByIdFound(Integer.valueOf(userId)),
-//                    userRepository.findByUserId(Integer.valueOf(userId)));
-//        }else{
-//            return new UserGenericResponse(false, Message.userByIdNotFound(Integer.valueOf(userId)),
-//                    null);
-//        }
-//    }
-
     @PostMapping(path = "/android/check/auth")
     public UserAuthCheckGenericResponse checkUserAuthentication(
             @RequestBody UserAuthCheckRequest request){
@@ -40,7 +29,7 @@ public class UserRestController {
     }
 
     @GetMapping(path = "/get/default")
-    public UserAuthCheckRequest getBody(){
-        return new UserAuthCheckRequest();
+    public String getBody(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
