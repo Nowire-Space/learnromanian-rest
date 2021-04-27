@@ -33,7 +33,8 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail, Role role) {
+    public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail,
+                Role role) {
         this.userName = userName;
         this.userFamilyName = userFamilyName;
         this.userPassword = userPassword;
@@ -42,7 +43,8 @@ public class User {
         this.role = role;
     }
 
-    public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail, Role role) {
+    public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber,
+                String userEmail, Role role) {
         this.userId = userId;
         this.userName = userName;
         this.userFamilyName = userFamilyName;

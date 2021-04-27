@@ -8,8 +8,8 @@ public class Enum {
     }
 
     public class DBRole{
-        public static final String PROFESSOR = "PROFESSOR_ROLE";
-        public static final String STUDENT = "STUDENT_ROLE";
-        public static final String ADMIN = "ADMIN_ROLE";
+        public static final String PROFESSOR = "ROLE_PROFESSOR";
+        public static final String STUDENT = "ROLE_STUDENT";
+        public static final String ADMIN = "ROLE_ADMIN";
     }
 }
