@@ -1,6 +1,8 @@
 package ro.ugal.learnromanian.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,8 @@ import ro.ugal.learnromanian.response.LoginResponse;
 import ro.ugal.learnromanian.util.Enum;
 import ro.ugal.learnromanian.util.Message;
 
+import java.util.List;
+
 @RestController
 public class MainRestController {
 
@@ -25,6 +29,17 @@ public class MainRestController {
 
     @Autowired
     private BCryptPasswordEncoder encoder;
+
+//    @PostMapping("/user")
+//    public User login(@RequestParam("userName") String userName, @RequestParam("password") String password){
+//        String token =
+//    }
+
+//    private String getJWTToken(String username) {
+//        String secretKey = "mySecretKey";
+//        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+//                .commaSeparatedStringToAuthorityList("ROLE_USER");
+//    }
 
     @PostMapping(path = "/login")
     public LoginResponse login() {
