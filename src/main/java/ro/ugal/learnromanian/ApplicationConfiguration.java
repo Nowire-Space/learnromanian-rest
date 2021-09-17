@@ -18,28 +18,28 @@ import java.util.Collections;
 @EnableAspectJAutoProxy
 public class ApplicationConfiguration implements WebMvcConfigurer {
 
-    @Autowired
-    private RequestLogger requestLogger;
+//    @Autowired
+//    private RequestLogger requestLogger;
+//
+//    @Bean
+//    public CorsFilter corsFilter(){
+//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        final CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.setAllowedOrigins(Collections.singletonList("*"));
+//        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorisation"));
+//        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTION", "DELETE", "PATCH"));
+//        source.registerCorsConfiguration("/**", config);
+//        return new CorsFilter(source);
+//    }
+//
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(requestLogger).addPathPatterns("/**");
+//    }
 
-    @Bean
-    public CorsFilter corsFilter(){
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*"));
-        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorisation"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTION", "DELETE", "PATCH"));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(requestLogger).addPathPatterns("/**");
-    }
-
-    @Bean
-    public BCryptPasswordEncoder getPasswordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public BCryptPasswordEncoder getPasswordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 }

@@ -14,31 +14,31 @@ import ro.ugal.learnromanian.repository.UserRepository;
 
 import java.util.Arrays;
 
-@Service
-public class ApplicationAuthenticationProvider implements AuthenticationProvider {
+//@Service
+public class ApplicationAuthenticationProvider {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder encoder;
-
-    @Override
-    public Authentication authenticate(Authentication authentication) {
-        String username = authentication.getName();
-        String password = authentication.getCredentials().toString();
-
-        User user = userRepository.findByUserEmail(username);
-        if(user != null && encoder.matches(password, user.getUserPassword())) {
-            return new UsernamePasswordAuthenticationToken(username, password,
-                    Arrays.asList(new SimpleGrantedAuthority(user.getRole().getRoleName())));
-        } else {
-            throw new BadCredentialsException("Please check your credentials.");
-        }
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
-    }
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private BCryptPasswordEncoder encoder;
+//
+//    @Override
+//    public Authentication authenticate(Authentication authentication) {
+//        String username = authentication.getName();
+//        String password = authentication.getCredentials().toString();
+//
+//        User user = userRepository.findByUserEmail(username);
+//        if(user != null && encoder.matches(password, user.getUserPassword())) {
+//            return new UsernamePasswordAuthenticationToken(username, password,
+//                    Arrays.asList(new SimpleGrantedAuthority(user.getRole().getRoleName())));
+//        } else {
+//            throw new BadCredentialsException("Please check your credentials.");
+//        }
+//    }
+//
+//    @Override
+//    public boolean supports(Class<?> authentication) {
+//        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+//    }
 }

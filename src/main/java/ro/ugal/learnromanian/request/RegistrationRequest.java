@@ -1,15 +1,33 @@
 package ro.ugal.learnromanian.request;
 
+import org.springframework.format.annotation.NumberFormat;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class RegistrationRequest {
 
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String name;
 
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String familyName;
 
+    @NotBlank
+    @Size(max = 15)
+    @NumberFormat
     private String phoneNumber;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
     private String email;
 
+    @NotBlank
+    @Size(min = 6, max = 20)
     private String password;
 
     public RegistrationRequest() { }
