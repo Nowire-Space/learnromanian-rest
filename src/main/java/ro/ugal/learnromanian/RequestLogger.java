@@ -20,6 +20,7 @@ public class RequestLogger extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        logger.log(Level.INFO, "REQUEST   {0}", request.getRequestURI());
         return true;
     }
 

@@ -1,5 +1,8 @@
 package ro.ugal.learnromanian.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,6 +20,7 @@ public class User {
     @Column(name="user_family_name")
     protected String userFamilyName;
 
+    @JsonIgnore
     @Column(name="user_password")
     protected String userPassword;
 
@@ -30,21 +34,26 @@ public class User {
     @JoinColumn(name = "user_role_id")
     protected Role role;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_photo_id")
+    protected UserPhoto photo;
+
     public User() {
     }
 
     public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail,
-                Role role) {
+                Role role, UserPhoto photo) {
         this.userName = userName;
         this.userFamilyName = userFamilyName;
         this.userPassword = userPassword;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.role = role;
+        this.photo = photo;
     }
 
     public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber,
-                String userEmail, Role role) {
+                String userEmail, Role role, UserPhoto photo) {
         this.userId = userId;
         this.userName = userName;
         this.userFamilyName = userFamilyName;
@@ -52,6 +61,7 @@ public class User {
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.role = role;
+        this.photo = photo;
     }
 
     public Integer getUserId() {
@@ -78,10 +88,12 @@ public class User {
         this.userFamilyName = userFamilyName;
     }
 
+    @JsonIgnore
     public String getUserPassword() {
         return userPassword;
     }
 
+    @JsonProperty
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
@@ -110,6 +122,14 @@ public class User {
         this.role = role;
     }
 
+    public UserPhoto getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(UserPhoto photo) {
+        this.photo = photo;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("User{");
@@ -120,6 +140,7 @@ public class User {
         sb.append(", userPhoneNumber='").append(userPhoneNumber).append('\'');
         sb.append(", userEmail='").append(userEmail).append('\'');
         sb.append(", role=").append(role);
+        sb.append(", photo=").append(photo);
         sb.append('}');
         return sb.toString();
     }
