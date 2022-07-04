@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ro.ugal</groupId>
 	<artifactId>learnromanian-rest</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>learnromanian-rest</name>
 	<description>REST API for "Learn Romanian" application</description>
 
