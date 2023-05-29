@@ -1,21 +1,29 @@
 package ro.ugal.learnromanian.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="user")
-public class User {
+//TO DO password should not be returned
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
     protected Integer userId;
 
-    @Column(name="user_name")
-    protected String userName;
+    @Column(name="user_last_name")
+    protected String userLastName;
 
     @Column(name="user_family_name")
     protected String userFamilyName;
@@ -27,121 +35,59 @@ public class User {
     @Column(name="user_phone_number")
     protected String userPhoneNumber;
 
-    @Column(name="user_email")
+    @Column(name="user_email", unique = true)
     protected String userEmail;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_role_id")
-    protected Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected List<Role> roles;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
     protected UserPhoto photo;
 
-    public User() {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 
-    public User(String userName, String userFamilyName, String userPassword, String userPhoneNumber, String userEmail,
-                Role role, UserPhoto photo) {
-        this.userName = userName;
-        this.userFamilyName = userFamilyName;
-        this.userPassword = userPassword;
-        this.userPhoneNumber = userPhoneNumber;
-        this.userEmail = userEmail;
-        this.role = role;
-        this.photo = photo;
+    public void addRole(Role role) {
+        roles.add(role);
+        role.setUser(this);
     }
 
-    public User(Integer userId, String userName, String userFamilyName, String userPassword, String userPhoneNumber,
-                String userEmail, Role role, UserPhoto photo) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userFamilyName = userFamilyName;
-        this.userPassword = userPassword;
-        this.userPhoneNumber = userPhoneNumber;
-        this.userEmail = userEmail;
-        this.role = role;
-        this.photo = photo;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserFamilyName() {
-        return userFamilyName;
-    }
-
-    public void setUserFamilyName(String userFamilyName) {
-        this.userFamilyName = userFamilyName;
-    }
-
-    @JsonIgnore
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    @JsonProperty
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public String getUserPhoneNumber() {
-        return userPhoneNumber;
-    }
-
-    public void setUserPhoneNumber(String userPhoneNumber) {
-        this.userPhoneNumber = userPhoneNumber;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public UserPhoto getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(UserPhoto photo) {
-        this.photo = photo;
+    public void removeRole(Role role) {
+        roles.remove(role);
+        role.setUser(null);
     }
 
     @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("User{");
-        sb.append("userId=").append(userId);
-        sb.append(", userName='").append(userName).append('\'');
-        sb.append(", userFamilyName='").append(userFamilyName).append('\'');
-        sb.append(", userPassword='").append(userPassword).append('\'');
-        sb.append(", userPhoneNumber='").append(userPhoneNumber).append('\'');
-        sb.append(", userEmail='").append(userEmail).append('\'');
-        sb.append(", role=").append(role);
-        sb.append(", photo=").append(photo);
-        sb.append('}');
-        return sb.toString();
+    public String getPassword() {
+        return userPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return userEmail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
+
