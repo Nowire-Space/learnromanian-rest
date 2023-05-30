@@ -1,9 +1,13 @@
 package ro.ugal.learnromanian.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="role")
 public class Role implements GrantedAuthority {
@@ -16,32 +20,19 @@ public class Role implements GrantedAuthority {
     @Column(name="role_name")
     protected String roleName;
 
-    public Role() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role )) return false;
+        return roleId != null && roleId.equals(((Role) o).getRoleId());
     }
 
-    public Role(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public Role(Integer roleId, String roleName) {
-        this.roleId = roleId;
-        this.roleName = roleName;
-    }
-
-    public Integer getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
     @Override
