@@ -17,7 +17,7 @@ on:
 jobs:
   build:
 
-    runs-on: NoWireRunner
+    runs-on: Nowire-Space.NoWireRunner
 
     steps:
     - uses: actions/checkout@v3
