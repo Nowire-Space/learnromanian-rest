@@ -21,4 +21,4 @@ jobs:
       - name: Package with Maven
         run: /opt/apache-maven-3.9.2/bin/mvn package
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag learnromanian-rest:${{ vars.APP_VERSION }}.$(date +%s)
+        run: docker build . --file Dockerfile --tag learnromanian-rest:${{ vars.APP_VERSION }}
