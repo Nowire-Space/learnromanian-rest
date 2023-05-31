@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Set envs
-        run: echo "::set-env=M2_HOME::/opt/apache-maven-3.9.2"
+        run: echo "::set-env=M2_HOME::/opt/apache-maven-3.9.2/bin"
       - name: Chack envs
         run: echo $M2_HOME
       - uses: actions/checkout@v3
