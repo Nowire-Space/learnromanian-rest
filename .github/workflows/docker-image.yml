@@ -10,8 +10,6 @@ jobs:
     name: Build app using Maven and create Docker image
     runs-on: self-hosted
     steps:
-      - name: Set environment variables
-        run: export M2_HOME="/opt/apache-maven-3.9.2"
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: mvn package
