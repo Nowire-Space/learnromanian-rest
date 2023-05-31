@@ -10,8 +10,10 @@ jobs:
     name: Build app using Maven and create Docker image
     runs-on: self-hosted
     steps:
+      - name: Set envs
+        run: echo "::set-env=M2_HOME::/opt/apache-maven-3.9.2"
       - name: Chack envs
-        run: echo $JAVA_HOME
+        run: echo $M2_HOME
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: mvn package
