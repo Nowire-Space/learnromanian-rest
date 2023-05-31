@@ -17,7 +17,7 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: NoWireRunner
 
     steps:
     - uses: actions/checkout@v3
