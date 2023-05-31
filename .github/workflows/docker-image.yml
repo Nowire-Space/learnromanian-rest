@@ -22,10 +22,10 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag learnromanian-rest:${{ vars.APP_VERSION }}
       - name: Stop running container
-        run: docker stop learnromanian-rest
+        run: docker stop learnromanian-rest:${{ vars.APP_VERSION }}
       - name: Remove existing image
-        run: docker rmi learnromanian-rest
+        run: docker rmi learnromanian-rest${{ vars.APP_VERSION }}
       - name: Remove existing container
-        run: docker rm learnromanian-rest
+        run: docker rm learnromanian-rest${{ vars.APP_VERSION }}
       - name: Start container from new image
         run: docker run -p ${{ vars.RUNNING_PORT }}:${{ vars.RUNNING_PORT }} --name learnromanian-rest -e APP_VERSION=${{ vars.APP_VERSION }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e RUNNING_PORT=${{ vars.RUNNING_PORT }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_URL=${{ secrets.DB_URL }} learnromanian-rest:${{ vars.APP_VERSION }}
