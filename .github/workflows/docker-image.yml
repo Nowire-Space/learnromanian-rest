@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Chack envs
-      - run: echo $JAVA_HOME
+        run: echo $JAVA_HOME
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: mvn package
