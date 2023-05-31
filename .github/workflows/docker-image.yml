@@ -10,14 +10,22 @@ jobs:
     name: Build app using Maven and create Docker image
     runs-on: self-hosted
     steps:
-      - name: Set envs
-        run: echo "::set-env=JAVA_HOME::/opt/jdk-19.0.2"
-      - name: Check envs
-        run: echo $JAVA_HOME
       - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
       - name: Package using Maven
         run: /opt/apache-maven-3.9.2/bin/mvn package
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag learnromanian-rest:${{ vars.APP_VERSION }}
-      - name: Echo directories
-        run: for dir in /home/*/; do echo "$dir"; done
+      - name: Stop running container
+        run: docker stop learnromanian-rest
+      - name: Remove existing image
+        run: docker rmi learnromanian-rest
+      - name: Remove existing container
+        run: docker rm learnromanian-rest
+      - name: Start container from new image
+        run: docker run -p ${{ vars.RUNNING_PORT }}:${{ vars.RUNNING_PORT }} --name learnromanian-rest -e APP_VERSION=${{ vars.APP_VERSION }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e RUNNING_PORT=${{ vars.RUNNING_PORT }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_URL=${{ secrets.DB_URL }} learnromanian-rest:${{ vars.APP_VERSION }}
