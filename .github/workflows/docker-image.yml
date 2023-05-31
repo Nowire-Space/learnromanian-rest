@@ -11,9 +11,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Set envs
-        run: echo "::set-env=M2_HOME::/opt/apache-maven-3.9.2/bin"
+        run: echo "::set-env=JAVA_HOME::/opt/jdk-19.0.2"
       - name: Check envs
-        run: echo $M2_HOME
+        run: echo $JAVA_HOME
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: /opt/apache-maven-3.9.2/bin/mvn package
