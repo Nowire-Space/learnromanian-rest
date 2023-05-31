@@ -26,5 +26,5 @@ spring:
       fail-on-empty-beans: false
 server:
   servlet:
-    context-path: /learnromanian/v0.0.1/api
-  port: 8081
+    context-path: /learnromanian/v${APP_VERSION}/api
+  port: ${RUNNING_PORT}
