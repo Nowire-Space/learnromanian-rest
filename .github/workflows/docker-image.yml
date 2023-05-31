@@ -6,10 +6,9 @@ on:
 
 jobs:
 
-  build:
-
+  package_and_build:
+    name: Build app using Maven and create Docker image
     runs-on: self-hosted
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -18,7 +17,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Package with Maven
+      - name: Package using Maven
         run: /opt/apache-maven-3.9.2/bin/mvn package
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag learnromanian-rest:${{ vars.APP_VERSION }}
+      - name: Echo directories
+        run: for dir in /home/*/; do echo "$dir"; done
