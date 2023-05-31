@@ -2,6 +2,7 @@ package nowire.space.learnromanian.controller;
 
 import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.service.AccountService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,8 @@ public class AccountController {
     }
 
     @GetMapping("/empty")
-    public User getEmptyUser() {
-        return new User();
+    public ResponseEntity<String> getEmptyUser() {
+        return new ResponseEntity<>("Hello from the other side!", HttpStatus.OK);
     }
 
     @PostMapping("/create")
