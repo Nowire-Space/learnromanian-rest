@@ -22,7 +22,7 @@ jobs:
       - name: Stop running container
         run: docker stop learnromanian-rest
       - name: Remove existing image
-        run: docker rmi learnromanian-rest${{ vars.APP_VERSION }}
+        run: docker rmi learnromanian-rest:${{ vars.APP_VERSION }}
       - name: Remove existing container
         run: docker rm learnromanian-rest
       - name: Build the Docker image
