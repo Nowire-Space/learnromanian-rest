@@ -11,9 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Set environment variables
-        shell: bash
-        run: |
-          echo "::set-env name=M2_HOME::/opt/apache-maven-3.9.2"
+        run: export M2_HOME="/opt/apache-maven-3.9.2"
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: mvn package
