@@ -10,6 +10,7 @@ jobs:
     name: Build app using Maven and create Docker image
     runs-on: self-hosted
     steps:
+      - run : echo $JAVA_HOME
       - uses: actions/checkout@v3
       - name: Package using Maven
         run: mvn package
