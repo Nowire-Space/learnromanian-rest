@@ -1,8 +1,8 @@
 package nowire.space.learnromanian.controller;
 
-import nowire.space.learnromanian.model.User;
+import jakarta.validation.Valid;
+import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.service.AccountService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +17,12 @@ public class AccountController {
     }
 
     @GetMapping("/empty")
-    public ResponseEntity<String> getEmptyUser() {
-        return new ResponseEntity<>("Hello from the other side!", HttpStatus.OK);
+    public RegistrationRequest getEmptyUser() {
+        return new RegistrationRequest();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createAccount(@RequestBody User user) {
-        return accountService.createAccount(user);
+    public ResponseEntity<String> createAccount(@Valid @RequestBody RegistrationRequest registrationRequest) {
+        return accountService.createAccount(registrationRequest);
     }
 }

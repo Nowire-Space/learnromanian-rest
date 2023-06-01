@@ -2,8 +2,7 @@ package nowire.space.learnromanian.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,6 +11,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name="user")
 //TO DO password should not be returned
@@ -44,6 +45,9 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
     protected UserPhoto photo;
+
+    @Column(name="user_enabled")
+    protected boolean userEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -87,7 +91,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return userEnabled;
     }
 }
 
