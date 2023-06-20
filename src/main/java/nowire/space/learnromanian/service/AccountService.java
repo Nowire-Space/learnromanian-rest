@@ -2,6 +2,7 @@ package nowire.space.learnromanian.service;
 
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.RegistrationRequest;
+import nowire.space.learnromanian.util.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,8 +32,9 @@ public class AccountService {
                 .build();
         User savedUser = userRepository.save(newUser);
         if (savedUser.getUserId() != null) {
-            return new ResponseEntity<>("New user with email {} and username {} was created.", HttpStatus.OK);
+            return new ResponseEntity<>(Message.USER_REGISTRATION_TRUE(savedUser.getUserFirstName(),
+                    savedUser.getUserFamilyName(), savedUser.getUserEmail()), HttpStatus.OK);
         }
-        return new ResponseEntity<>("User was not created.", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Message.USER_REGISTRATION_ERROR, HttpStatus.BAD_REQUEST);
     }
 }

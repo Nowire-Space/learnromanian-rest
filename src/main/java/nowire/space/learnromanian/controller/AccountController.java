@@ -18,7 +18,7 @@ public class AccountController {
 
     @GetMapping("/empty")
     public RegistrationRequest getEmptyUser() {
-        return new RegistrationRequest();
+        return RegistrationRequest.builder().build();
     }
 
     @PostMapping("/create")

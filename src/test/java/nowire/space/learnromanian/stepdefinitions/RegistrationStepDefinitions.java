@@ -1,66 +1,123 @@
 package nowire.space.learnromanian.stepdefinitions;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.google.inject.Inject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+import nowire.space.learnromanian.LearnromanianRestApplication;
+import nowire.space.learnromanian.model.Role;
+import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.RegistrationRequest;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpResponse;
+import nowire.space.learnromanian.util.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import nowire.space.learnromanian.controller.AccountController;
 import nowire.space.learnromanian.model.User;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @Slf4j
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+@ContextConfiguration(classes = LearnromanianRestApplication.class)
 public class RegistrationStepDefinitions {
 
-    @Inject
-    @MockBean
-    private AccountController accountController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    WireMockServer mockServer;
+    @Autowired
+    private UserRepository userRepository;
+
+    ObjectMapper objectMapper;
+
+    RegistrationRequest registrationRequest;
+
+    Integer savedUserId;
 
     @Before
-    private void setUp() {
-        mockServer = new WireMockServer();
-        mockServer.start();
-        configureFor("localhost", 8080);
-        stubFor(get(urlEqualTo("/learnromanian/v0.0.1/api/account/empty"))
-                .willReturn(
-                        aResponse()
-                                .withBody(String.valueOf(new RegistrationRequest()))
-                                .withStatus(HttpStatus.OK.value())));
+    public void setUp() {
+        objectMapper = new ObjectMapper();
     }
 
     @Given("^user with following (.*), (.*), (.*), (.*), (.*) and (.*)$")
-    public void user_with_doe_and_john(String userFamilyName, String userLastName, String phoneNumber, String email,
+    public void save_registration_request(String userFamilyName, String userFirstName, String phoneNumber, String email,
                                        String password, String passwordCheck) throws IOException {
+        registrationRequest = RegistrationRequest.builder()
+                .userFamilyName(userFamilyName)
+                .userFirstName(userFirstName)
+                .userPhoneNumber(phoneNumber)
+                .userEmail(email)
+                .userPassword(password)
+                .userPasswordCheck(passwordCheck)
+                .build();
 
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet request = new HttpGet("http://localhost:8080/learnromanian/v0.0.1/api/account/empty");
-        HttpResponse httpResponse = httpClient.execute(request);
-        String stringResponse = httpResponse.toString();
-
-//        User newUser = new User();
-//        newUser.setUserFamilyName(lastName);
-//        newUser.setUserFirstName(firstName);
-//        when(accountController.createAccount(any())).thenReturn(new ResponseEntity<>("OK", HttpStatus.OK));
-//        log.info("First Name: {}. Last Name: {}", firstName, lastName);
-        log.info("Response: {}", stringResponse);
+        log.info("Saved registration request for user {}.", registrationRequest.getUserEmail());
     }
 
+    @And("^admin user with (.*), (.*), (.*), (.*) and (.*)$")
+    public void save_admin_user(String adminFamilyName, String adminFirstName, String adminPhoneNumber,
+                                String adminEmail, String adminPassword) {
+        User adminUser = User.builder()
+                .userFamilyName(adminFamilyName)
+                .userFirstName(adminFirstName)
+                .userPhoneNumber(adminPhoneNumber)
+                .userEmail(adminEmail)
+                .userPassword(adminPassword)
+                .roles(new ArrayList<>())
+                .userEnabled(false)
+                .build();
+
+        adminUser.addRole(Role.builder()
+                .roleName(nowire.space.learnromanian.util.Role.ADMIN)
+                .build());
+
+        User savedAdminUser = userRepository.save(adminUser);
+        log.info("Saved user {} with role {} to H2 DB.", savedAdminUser.getUserEmail(), savedAdminUser.getRoles().get(0).getRoleName());
+    }
+
+    @When("user submits POST registration request")
+    public void user_submitsPOST_registration_request() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/account/create")
+                        .content(objectMapper.writeValueAsString(registrationRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_REGISTRATION_TRUE(
+                        registrationRequest.getUserFirstName(), registrationRequest.getUserFamilyName(),
+                        registrationRequest.getUserEmail())));
+        savedUserId = userRepository.findByUserEmail(registrationRequest.getUserEmail()).getUserId();
+        log.info("POST request was submitted by new user: {}", registrationRequest.getUserFirstName().concat(" ")
+                .concat(registrationRequest.getUserFamilyName()));
+    }
+
+    @And("admin approves registration request")
+    public void admin_approves_registration_request() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable/".concat(String.valueOf(savedUserId)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.ADMIN_VALIDATION_SUCCESS(
+                        registrationRequest.getUserFirstName(), registrationRequest.getUserFamilyName(),
+                        registrationRequest.getUserEmail())));
+    }
+
+    @Then("user's data is saved to db and user's account is enabled")
+    public void user_s_data_is_saved_to_db_and_account_is_enabled() {
+        User savedUser = userRepository.findByUserId(savedUserId);
+        assertThat(savedUser.getUserEmail()).isEqualTo(registrationRequest.getUserEmail());
+        assertThat(savedUser.getUserFirstName()).isEqualTo(registrationRequest.getUserFirstName());
+        assertThat(savedUser.getUserFamilyName()).isEqualTo(registrationRequest.getUserFamilyName());
+        assertThat(savedUser.isUserEnabled()).isTrue();
+        log.info("Assertions passed.");
+    }
 }

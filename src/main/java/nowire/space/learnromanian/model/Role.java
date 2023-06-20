@@ -1,12 +1,16 @@
 package nowire.space.learnromanian.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
+@Builder
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="role")
 public class Role implements GrantedAuthority {
@@ -17,7 +21,7 @@ public class Role implements GrantedAuthority {
     protected Integer roleId;
 
     @Column(name="role_name")
-    protected String roleName;
+    protected nowire.space.learnromanian.util.Role roleName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -36,6 +40,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return roleName;
+        return roleName.toString();
     }
 }

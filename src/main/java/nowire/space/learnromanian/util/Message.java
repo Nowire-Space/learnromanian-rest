@@ -10,4 +10,16 @@ public class Message {
     public static String USER_REGISTRATION_TRUE = "User was successfully registered.";
     public static String USER_REGISTRATION_FALSE = "Email address is already registered.";
     public static String USER_REGISTRATION_ERROR = "An error occurred.";
+
+    public static String ADMIN_VALIDATION_ERROR = "This account is already enabled.";
+
+    public static String USER_REGISTRATION_TRUE(String firstName, String familyName, String email) {
+        return "Account for ".concat(firstName).concat(" ").concat(familyName).concat(" with email ")
+                .concat(email).concat(" was created.");
+    }
+
+    public static String ADMIN_VALIDATION_SUCCESS(String firstName, String familyName, String email) {
+        return "Account for ".concat(firstName).concat(" ").concat(familyName).concat(" with email ")
+                .concat(email).concat(" was enabled.");
+    }
 }
