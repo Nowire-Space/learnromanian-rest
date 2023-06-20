@@ -16,4 +16,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Package using Maven
-        run: /opt/apache-maven-3.9.2/bin/mvn -RUNNING_PORT=8085 test
+        run: /opt/apache-maven-3.9.2/bin/mvn -DRUNNING_PORT=8085 test
