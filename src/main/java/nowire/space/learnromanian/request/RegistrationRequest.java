@@ -4,11 +4,13 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Objects;
 
+@Builder
 @Data
 public class RegistrationRequest {
 
