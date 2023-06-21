@@ -171,8 +171,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M5</version>
 				<configuration>
-					<skip>true</skip>
+					<includes>
+						<include>**/*Test*.java</include>
+					</includes>
 				</configuration>
+
 			</plugin>
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
