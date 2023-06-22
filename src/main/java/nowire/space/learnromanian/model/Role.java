@@ -21,25 +21,10 @@ public class Role implements GrantedAuthority {
     protected Integer roleId;
 
     @Column(name="role_name")
-    protected nowire.space.learnromanian.util.Role roleName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Role )) return false;
-        return roleId != null && roleId.equals(((Role) o).getRoleId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    protected String roleName;
 
     @Override
     public String getAuthority() {
-        return roleName.toString();
+        return roleName;
     }
 }

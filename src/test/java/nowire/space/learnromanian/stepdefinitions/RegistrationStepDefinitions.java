@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -75,16 +74,15 @@ public class RegistrationStepDefinitions {
                 .userPhoneNumber(adminPhoneNumber)
                 .userEmail(adminEmail)
                 .userPassword(adminPassword)
-                .roles(new ArrayList<>())
                 .userEnabled(false)
                 .build();
 
-        adminUser.addRole(Role.builder()
-                .roleName(nowire.space.learnromanian.util.Role.ADMIN)
+        adminUser.setRole(Role.builder()
+                .roleName(nowire.space.learnromanian.util.Role.ADMIN.toString())
                 .build());
 
         User savedAdminUser = userRepository.save(adminUser);
-        log.info("Saved user {} with role {} to H2 DB.", savedAdminUser.getUserEmail(), savedAdminUser.getRoles().get(0).getRoleName());
+        log.info("Saved user {} with role {} to H2 DB.", savedAdminUser.getUserEmail(), savedAdminUser.getRole().getRoleName());
     }
 
     @When("user submits POST registration request")
@@ -96,7 +94,7 @@ public class RegistrationStepDefinitions {
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_REGISTRATION_TRUE(
                         registrationRequest.getUserFirstName(), registrationRequest.getUserFamilyName(),
                         registrationRequest.getUserEmail())));
-        savedUserId = userRepository.findByUserEmail(registrationRequest.getUserEmail()).getUserId();
+        savedUserId = userRepository.findByUserEmail(registrationRequest.getUserEmail()).get().getUserId();
         log.info("POST request was submitted by new user: {}", registrationRequest.getUserFirstName().concat(" ")
                 .concat(registrationRequest.getUserFamilyName()));
     }

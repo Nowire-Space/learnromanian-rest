@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Data
 @NoArgsConstructor
@@ -39,8 +39,9 @@ public class User implements UserDetails {
     @Column(name="user_email", unique = true)
     protected String userEmail;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_role_id")
+    protected Role role;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
@@ -51,17 +52,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    public void addRole(Role role) {
-        roles.add(role);
-        role.setUser(this);
-    }
-
-    public void removeRole(Role role) {
-        roles.remove(role);
-        role.setUser(null);
+        return Collections.singletonList(role);
     }
 
     @Override

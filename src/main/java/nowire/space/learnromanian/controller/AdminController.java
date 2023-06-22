@@ -1,6 +1,8 @@
 package nowire.space.learnromanian.controller;
 
+import jakarta.validation.Valid;
 import nowire.space.learnromanian.request.RegistrationRequest;
+import nowire.space.learnromanian.request.UserEnableRequest;
 import nowire.space.learnromanian.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class AdminController {
         return RegistrationRequest.builder().build();
     }
 
-    @PostMapping("/enable/{userId}")
-    public ResponseEntity<String> enableAccount(@PathVariable("userId") Integer userId) {
-        return adminService.enableAccount(userId);
+    @PostMapping("/enable")
+    public ResponseEntity<String> enableAccount(@Valid @RequestBody UserEnableRequest request) {
+        return adminService.enableAccount(request);
     }
 }

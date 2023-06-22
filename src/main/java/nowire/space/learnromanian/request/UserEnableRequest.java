@@ -2,13 +2,13 @@ package nowire.space.learnromanian.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import nowire.space.learnromanian.util.Role;
 
 @Data
-public class LoginRequest {
+public class UserEnableRequest {
 
     @NotBlank
-    private String username;
+    private Integer userId;
 
-    @NotBlank
-    private String password;
+    private Role role;
 }

@@ -1,7 +1,9 @@
 package nowire.space.learnromanian.service;
 
+import nowire.space.learnromanian.model.Role;
 import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.UserRepository;
+import nowire.space.learnromanian.request.UserEnableRequest;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,13 @@ public class AdminService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<String> enableAccount(Integer userId) {
-        User requestedUser = userRepository.findByUserId(userId);
+    public ResponseEntity<String> enableAccount(UserEnableRequest request) {
+
+        //TODO assign user role
+        User requestedUser = userRepository.findByUserId(request.getUserId());
         if (!requestedUser.isUserEnabled()) {
             requestedUser.setUserEnabled(true);
+            requestedUser.setRole(Role.builder().roleName(request.getRole().toString()).build());
             User updatedUser = userRepository.save(requestedUser);
             return new ResponseEntity<>(Message.ADMIN_VALIDATION_SUCCESS(updatedUser.getUserFirstName(),
                     updatedUser.getUserFamilyName(), updatedUser.getUserEmail()), HttpStatus.OK);
