@@ -16,4 +16,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Run tests using Maven
-        run: /opt/apache-maven-3.9.2/bin/mvn test -Dtest.arguments="--RUNNING_PORT=8085  --SECRET_KEY=8c5223c21cc1d4fdb869b21ec587b3bfdc65d10e925a6ada425e8a21218c3d8c"
+        run: /opt/apache-maven-3.9.2/bin/mvn test -DRUNNING_PORT=${{ vars.RUNNING_PORT }}  -DSECRET_KEY=${{ secrets.SECRET_KEY }}"
