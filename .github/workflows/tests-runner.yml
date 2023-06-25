@@ -16,4 +16,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Package using Maven
-        run: /opt/apache-maven-3.9.2/bin/mvn -DRUNNING_PORT=8085 -DSECRET_KEY=8c5223c21cc1d4fdb869b21ec587b3bfdc65d10e925a6ada425e8a21218c3d8c test
+        run: /opt/apache-maven-3.9.2/bin/mvn -DRUNNING_PORT=8085 \ -DSECRET_KEY=8c5223c21cc1d4fdb869b21ec587b3bfdc65d10e925a6ada425e8a21218c3d8c test
