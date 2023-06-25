@@ -1,14 +1,16 @@
 package nowire.space.learnromanian.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
-import nowire.space.learnromanian.util.Role;
 
 @Data
+@Builder
 public class UserEnableRequest {
 
-    @NotBlank
+    @NotNull
     private Integer userId;
 
-    private Role role;
+    @NotNull
+    private Integer roleId;
 }

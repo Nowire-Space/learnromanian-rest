@@ -5,4 +5,6 @@ import nowire.space.learnromanian.model.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     Role findByRoleName(String roleName);
+
+    Role findByRoleId(Integer roleId);
 }

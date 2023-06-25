@@ -2,8 +2,6 @@ package nowire.space.learnromanian.service;
 
 import lombok.AllArgsConstructor;
 import nowire.space.learnromanian.configuration.JwtService;
-import nowire.space.learnromanian.model.Role;
-import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
@@ -18,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import nowire.space.learnromanian.model.User;
 
-import java.util.Collections;
-
 @Service
 @AllArgsConstructor
 public class AccountService {
@@ -30,8 +26,6 @@ public class AccountService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
     private final AuthenticationManager authenticationManager;
 
     public User getUser() {
@@ -39,15 +33,13 @@ public class AccountService {
     }
 
     public ResponseEntity<String> createAccount(RegistrationRequest registrationRequest) {
-        Role adminRole = roleRepository.getReferenceById(1);
-        User newUser = User.builder()//TODO for testing purposes
+        User newUser = User.builder()
                 .userFirstName(registrationRequest.getUserFirstName())
                 .userFamilyName(registrationRequest.getUserFamilyName())
                 .userEmail(registrationRequest.getUserEmail())
                 .userPhoneNumber(registrationRequest.getUserPhoneNumber())
                 .userPassword(passwordEncoder.encode(registrationRequest.getUserPassword()))
                 .userEnabled(false)
-                .role(adminRole)//TODO for testing purposes
                 .build();
 
         User savedUser = userRepository.save(newUser);

@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${secret.key}")
-    private static String SECRET_KEY;
+    private String SECRET_KEY;
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(userDetails, new HashMap<>());

@@ -18,8 +18,20 @@ public class Message {
                 .concat(email).concat(" was created.");
     }
 
-    public static String ADMIN_VALIDATION_SUCCESS(String firstName, String familyName, String email) {
+    public static String ADMIN_VALIDATION_TRUE(String firstName, String familyName, String email) {
         return "Account for ".concat(firstName).concat(" ").concat(familyName).concat(" with email ")
                 .concat(email).concat(" was enabled.");
+    }
+
+    public static String ADMIN_VALIDATION_USER_NOT_FOUND(Integer id) {
+        return "User with id ".concat(id.toString()).concat(" was not found.");
+    }
+
+    public static String ADMIN_REJECT_TRUE(String id) {
+        return "User with id ".concat(id).concat(" was successfully deleted.");
+    }
+
+    public static String ADMIN_REJECT_FALSE(String id) {
+        return "User with id ".concat(id).concat(" was not found!");
     }
 }
