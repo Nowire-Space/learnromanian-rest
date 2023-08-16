@@ -47,8 +47,15 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_photo_id")
     protected UserPhoto photo;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_token_id")
+    protected VerificationToken token;
+
     @Column(name="user_enabled")
     protected boolean userEnabled;
+
+    @Column(name="user_activated")
+    protected boolean userActivated;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,7 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return userEnabled;
+        return userEnabled && userActivated;
     }
 }
 

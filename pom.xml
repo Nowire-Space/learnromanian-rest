@@ -110,7 +110,7 @@
 		</dependency>
 
 
-		<!--Serenity - Cucumber stuff-->
+		<!--Serenity - Cucumber stuff START-->
 		<dependency>
 			<groupId>net.serenity-bdd</groupId>
 			<artifactId>serenity-core</artifactId>
@@ -171,7 +171,12 @@
 			<version>3.23.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!--Serenity - Cucumber stuff-->
+		<!--Serenity - Cucumber stuff END-->
+		<dependency>
+			<groupId>com.mailjet</groupId>
+			<artifactId>mailjet-client</artifactId>
+			<version>5.2.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
