@@ -9,6 +9,7 @@ import nowire.space.learnromanian.model.VerificationToken;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.repository.VerificationTokenRepository;
 import nowire.space.learnromanian.request.LoginRequest;
+import nowire.space.learnromanian.request.PasswordResetRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Slf4j
@@ -101,5 +103,30 @@ public class AccountService {
         user.setToken(null);
         userRepository.save(user);
         return ResponseEntity.ok(Message.USER_ACTIVATION_TRUE);
+    }
+
+    public ResponseEntity<String> resetPassword(PasswordResetRequest request) throws MailjetException {
+        Optional<User> userOptional = userRepository.findByUserEmail(request.getEmail());
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        String newPassword = generateNewPassword();
+        User user = userOptional.get();
+        emailService.sendPasswordResetEmail(user.getUserEmail(), newPassword);
+        user.setUserPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return ResponseEntity.ok(Message.PASSWORD_RESET_TRUE);
+    }
+
+    private String generateNewPassword() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 8;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

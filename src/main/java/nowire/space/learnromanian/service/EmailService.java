@@ -39,8 +39,7 @@ public class EmailService {
                 ClientOptions.builder()
                         .apiKey(emailApiKey)
                         .apiSecretKey(emailApiSecret)
-                        .build()
-        );
+                        .build());
         MailjetRequest request = new MailjetRequest(Email.resource)
                 .property(Email.FROMEMAIL, emailSender)
                 .property(Email.FROMNAME, emailSenderName)
@@ -49,6 +48,23 @@ public class EmailService {
                 .property(Email.RECIPIENTS, new JSONArray().put(new JSONObject().put(Email.EMAIL, userEmail)));
         MailjetResponse response = client.post(request);
         log.info("Authentication token for user {} is {}", userEmail, token);
+        log.info("MailJet sender response code: {} and data: {}", response.getStatus(), response.getData().toString());
+    }
+
+    public void sendPasswordResetEmail(String userEmail, String newPassword) throws MailjetException {
+        MailjetClient client = new MailjetClient(
+                ClientOptions.builder()
+                        .apiKey(emailApiKey)
+                        .apiSecretKey(emailApiSecret)
+                        .build());
+        MailjetRequest request = new MailjetRequest(Email.resource)
+                .property(Email.FROMEMAIL, emailSender)
+                .property(Email.FROMNAME, emailSenderName)
+                .property(Email.SUBJECT, Message.EMAIL_PASSWORD_RESET_SUBJECT)
+                .property(Email.HTMLPART, Message.EMAIL_PASSWORD_RESET_HTML(newPassword))
+                .property(Email.RECIPIENTS, new JSONArray().put(new JSONObject().put(Email.EMAIL, userEmail)));
+        MailjetResponse response = client.post(request);
+        log.info("Password reset email sent to user {}", userEmail);
         log.info("MailJet sender response code: {} and data: {}", response.getStatus(), response.getData().toString());
     }
 }
