@@ -1,5 +1,6 @@
 package nowire.space.learnromanian.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mailjet.client.errors.MailjetException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,10 @@ import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,13 +26,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import nowire.space.learnromanian.model.User;
 
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -128,5 +131,27 @@ public class AccountService {
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+    @PreAuthorize("hasRole('STUDENT')")
+    public String getUserProfile(String username) throws CloneNotSupportedException {
+       User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
+       User userClone = (User)user.clone();
+       userClone.setUserPassword(null);
+       userClone.setPhoto(null);
+       ObjectMapper objectMapper = new ObjectMapper();
+       String jsonString;
+       try{
+           jsonString = objectMapper.writeValueAsString(userClone);
+       } catch (JsonProcessingException e) {
+           throw new RuntimeException(e);
+       }
+        return jsonString;
+    }
+    @PreAuthorize("hasRole('STUDENT')")
+    public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
+        Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, rowsPerPage, sort);
+        List<User> users = userRepository.findAll();
+        return new PageImpl<>(users, pageable, users.size());
     }
 }

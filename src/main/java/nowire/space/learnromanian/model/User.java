@@ -16,7 +16,7 @@ import java.util.Collections;
 @Entity
 @Table(name="user")
 //TO DO password should not be returned
-public class User implements UserDetails {
+public class User implements UserDetails, Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,6 +90,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return userEnabled && userActivated;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
 
