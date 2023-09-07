@@ -1,3 +1,4 @@
+@Registration
 Feature: Registration
   Users should be able to submit POST requests with registration body that should be approved/rejected by admin.
 

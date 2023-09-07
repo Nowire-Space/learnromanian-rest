@@ -1,3 +1,4 @@
+@Profile
 Feature: Profile
   Profile Controller contains all the endpoints which are responsible for CRUD operations on users profile.
 
@@ -8,6 +9,6 @@ Feature: Profile
     Then user's data is pulled
 
     Examples:
-      | userFamilyName | userFirstName | phoneNumber  | email             | password | userProfile |
-      | Doe            | John          | +40555555555 | john.doe@mail.com | john.doe |john.doe@mail.com             |
+      | userFamilyName | userFirstName | phoneNumber  | email             | password | userProfile       |
+      | Doe            | John          | +40555555555 | john.doe@mail.com | john.doe | john.doe@mail.com |
 

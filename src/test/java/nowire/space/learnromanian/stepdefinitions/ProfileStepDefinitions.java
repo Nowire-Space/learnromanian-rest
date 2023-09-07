@@ -1,6 +1,5 @@
 package nowire.space.learnromanian.stepdefinitions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import io.cucumber.java.Before;
@@ -9,7 +8,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
-import nowire.space.learnromanian.CucumberTestSuite;
 import nowire.space.learnromanian.LearnromanianRestApplication;
 import nowire.space.learnromanian.configuration.JwtService;
 import nowire.space.learnromanian.model.Role;
@@ -19,25 +17,20 @@ import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.util.Enum;
-import nowire.space.learnromanian.util.Message;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = LearnromanianRestApplication.class)
-public class ProfileStepDefinition {
+public class ProfileStepDefinitions {
 
     @Autowired
     private MockMvc mockMvc;
@@ -78,7 +71,7 @@ public class ProfileStepDefinition {
     @Autowired
     private PasswordEncoder encoder;
 
-    @Before
+    @Before("@Profile")
     public void setUp(){
         objectMapper = new ObjectMapper();
         List<Role> roles = new ArrayList<>();

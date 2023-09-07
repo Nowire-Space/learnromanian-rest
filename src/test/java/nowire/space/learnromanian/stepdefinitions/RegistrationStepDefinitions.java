@@ -25,7 +25,6 @@ import nowire.space.learnromanian.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -67,7 +66,7 @@ public class RegistrationStepDefinitions {
 
     private Integer errorCode;
 
-    @Before
+    @Before("@Registration")
     public void setUp() {
         objectMapper = new ObjectMapper();
 
