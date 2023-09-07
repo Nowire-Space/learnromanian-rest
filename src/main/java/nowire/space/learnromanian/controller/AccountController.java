@@ -45,7 +45,7 @@ public class AccountController {
         return accountService.resetPassword(request);
     }
     @GetMapping("/{username}")
-    public String getUserProfile(@PathVariable String username) throws CloneNotSupportedException {
+    public String getUserProfile(@PathVariable String username){
         return accountService.getUserProfile(username);
 
     }

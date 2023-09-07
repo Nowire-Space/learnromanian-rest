@@ -16,7 +16,7 @@ import java.util.Collections;
 @Entity
 @Table(name="user")
 //TO DO password should not be returned
-public class User implements UserDetails, Cloneable{
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,9 +43,11 @@ public class User implements UserDetails, Cloneable{
     @JoinColumn(name = "user_role_id")
     protected Role role;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
     protected UserPhoto photo;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_token_id")

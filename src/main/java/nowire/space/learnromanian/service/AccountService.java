@@ -2,6 +2,7 @@ package nowire.space.learnromanian.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mailjet.client.errors.MailjetException;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,22 +133,21 @@ public class AccountService {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
-    @PreAuthorize("hasRole('STUDENT')")
-    public String getUserProfile(String username) throws CloneNotSupportedException {
+//    @PreAuthorize("hasRole('STUDENT')")
+    @RolesAllowed("STUDENT")
+//    @PreAuthorize("hasPermission('STUDENT')")
+    public String getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
-       User userClone = (User)user.clone();
-       userClone.setUserPassword(null);
-       userClone.setPhoto(null);
        ObjectMapper objectMapper = new ObjectMapper();
        String jsonString;
        try{
-           jsonString = objectMapper.writeValueAsString(userClone);
+           jsonString = objectMapper.writeValueAsString(user);
        } catch (JsonProcessingException e) {
            throw new RuntimeException(e);
        }
         return jsonString;
     }
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("Student")
     public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
         Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, rowsPerPage, sort);
