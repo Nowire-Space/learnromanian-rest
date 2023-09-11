@@ -29,7 +29,7 @@ public class User implements UserDetails{
     @Column(name="user_family_name")
     protected String userFamilyName;
 
-    @JsonIgnore
+
     @Column(name="user_password")
     protected String userPassword;
 
@@ -64,6 +64,7 @@ public class User implements UserDetails{
         return Collections.singletonList(role);
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return userPassword;
@@ -94,9 +95,5 @@ public class User implements UserDetails{
         return userEnabled && userActivated;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException{
-        return super.clone();
-    }
 }
 

@@ -45,7 +45,7 @@ public class AccountController {
         return accountService.resetPassword(request);
     }
     @GetMapping("/{username}")
-    public String getUserProfile(@PathVariable String username){
+    public ResponseEntity<User> getUserProfile(@PathVariable String username){
         return accountService.getUserProfile(username);
 
     }

@@ -134,20 +134,15 @@ public class AccountService {
                 .toString();
     }
 //    @PreAuthorize("hasRole('STUDENT')")
-    @RolesAllowed("STUDENT")
-//    @PreAuthorize("hasPermission('STUDENT')")
-    public String getUserProfile(String username) {
+//@RolesAllowed({"ADMIN", "PROFESSOR", "MODERATOR"})
+    @RolesAllowed({"STUDENT"})
+    public ResponseEntity<User> getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
-       ObjectMapper objectMapper = new ObjectMapper();
-       String jsonString;
-       try{
-           jsonString = objectMapper.writeValueAsString(user);
-       } catch (JsonProcessingException e) {
-           throw new RuntimeException(e);
-       }
-        return jsonString;
+       log.info("USER ROLE is {}", user.getRole().getRoleName() );
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
-    @PreAuthorize("Student")
+//    @PreAuthorize("Student")
+    @RolesAllowed({"STUDENT"})
     public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
         Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, rowsPerPage, sort);
