@@ -1,0 +1,20 @@
+name: Dev Docker Deploy
+
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+  package_and_build:
+    name: Log into dev server, build app using Maven, create Docker image and run container
+    runs-on: self-hosted
+    environment: DEV
+    steps:
+      - name: Logging into server and executing prepared scripts
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: ./deployment/dep.sh DEV ${{ vars.RUNNING_PORT }} ${{ vars.APP_VERSION }} ${{ secrets.SECRET_KEY }} ${{ secrets.DB_PASSWORD }} ${{ secrets.DB_USERNAME }} ${{ secrets.DB_URL }} ${{ secrets.EMAIL_API_KEY }} ${{ secrets.EMAIL_API_SECRET }} ${{ secrets.EMAIL_SENDER }} ${{ secrets.EMAIL_SENDER_NAME }} ${{ secrets.WEBAPP_URL }} ${{ secrets.VERIFICATION_TOKEN_EXPIRATION_MINUTES }}
