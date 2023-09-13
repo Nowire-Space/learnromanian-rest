@@ -16,7 +16,7 @@ import java.util.Collections;
 @Entity
 @Table(name="user")
 //TO DO password should not be returned
-public class User implements UserDetails {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(name="user_family_name")
     protected String userFamilyName;
 
-    @JsonIgnore
+
     @Column(name="user_password")
     protected String userPassword;
 
@@ -43,9 +43,11 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_role_id")
     protected Role role;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_photo_id")
     protected UserPhoto photo;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_token_id")
@@ -62,6 +64,7 @@ public class User implements UserDetails {
         return Collections.singletonList(role);
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return userPassword;
@@ -91,5 +94,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return userEnabled && userActivated;
     }
+
 }
 

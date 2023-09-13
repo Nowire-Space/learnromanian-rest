@@ -108,8 +108,6 @@
 			<version>2.27.2</version>
 			<scope>test</scope>
 		</dependency>
-
-
 		<!--Serenity - Cucumber stuff START-->
 		<dependency>
 			<groupId>net.serenity-bdd</groupId>

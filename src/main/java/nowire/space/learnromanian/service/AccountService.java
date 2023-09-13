@@ -1,6 +1,7 @@
 package nowire.space.learnromanian.service;
 
 import com.mailjet.client.errors.MailjetException;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,12 +25,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import nowire.space.learnromanian.model.User;
 
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -128,5 +128,20 @@ public class AccountService {
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    @RolesAllowed({"STUDENT"})
+    public ResponseEntity<User> getUserProfile(String username) {
+       User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
+       log.info("USER ROLE is {}", user.getRole().getRoleName() );
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @RolesAllowed({"STUDENT"})
+    public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
+        Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, rowsPerPage, sort);
+        List<User> users = userRepository.findAll();
+        return new PageImpl<>(users, pageable, users.size());
     }
 }

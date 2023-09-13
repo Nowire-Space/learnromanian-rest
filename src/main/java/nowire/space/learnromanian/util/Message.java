@@ -55,4 +55,5 @@ public class Message {
     public static String EMAIL_PASSWORD_RESET_HTML(String newPassword) {
         return "<h3>Please use new password to log into your account: ".concat(newPassword).concat("</h3>");
     }
+
 }
