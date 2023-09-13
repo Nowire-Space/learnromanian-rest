@@ -2,7 +2,6 @@ package nowire.space.learnromanian.stepdefinitions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.jayway.jsonpath.JsonPath;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -11,13 +10,11 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import nowire.space.learnromanian.LearnromanianRestApplication;
-import nowire.space.learnromanian.configuration.JwtService;
 import nowire.space.learnromanian.model.Role;
 import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
-import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.util.Enum;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,27 +22,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @Slf4j
@@ -64,30 +53,19 @@ public class ProfileStepDefinitions {
     @Autowired
     private RoleRepository roleRepository;
 
-    private String role;
+    @Autowired
+    private PasswordEncoder encoder;
 
     private User user;
 
     private ObjectMapper objectMapper;
 
-    private RegistrationRequest registrationRequest;
-
     private String bearerToken;
-
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private PasswordEncoder encoder;
-
-    private ResponseEntity <User> responseEntity;
 
     private String txt;
 
     @Before("@Profile")
-    public void setUp(){
-
+    public void setUp() {
         objectMapper = new ObjectMapper();
         List<Role> roles = new ArrayList<>();
         roles.add(new Role(1, Enum.Role.ADMIN));
@@ -97,10 +75,9 @@ public class ProfileStepDefinitions {
         roleRepository.saveAll(roles);
     }
 
-
     @Given("^active and enabled user with following (.*), (.*), (.*), (.*), (.*)$")
     public void user_is_active_and_enabled(String userFamilyName, String userFirstName, String phoneNumber, String email,
-                                     String password){
+                                           String password) {
         User user = User.builder()
                 .userFamilyName(userFamilyName)
                 .userFirstName(userFirstName)
@@ -131,12 +108,10 @@ public class ProfileStepDefinitions {
 
         bearerToken = JsonPath.read(response.getResponse().getContentAsString(), "$.token");
         log.info("User auth token is: {}.", bearerToken);
-
-
     }
 
     @And("^user submits GET profile request for the (.*)")
-    @WithMockUser(username = "username",roles = {"STUDENT"})
+    @WithMockUser(username = "username", roles = {"STUDENT"})
     public void get_profile_request(String userProfile) throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.get("/account/{username}", userProfile)
                         .with(user("user").roles("STUDENT")))
@@ -147,21 +122,14 @@ public class ProfileStepDefinitions {
         user = userRepository.findByUserEmail(userProfile).get();
     }
 
-
-        @Then("user's data is pulled")
-        public void data_pulled() throws JsonProcessingException {
-            ObjectMapper om = new ObjectMapper();
-            String json = om.writeValueAsString(user);
-            if (txt.equals(json)){
-                log.info("Data is correctly returned");
-            }
-            else
-            {
-                log.error("Data is wrong returned");
-            }
-
+    @Then("user's data is pulled")
+    public void data_pulled() throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        String json = om.writeValueAsString(user);
+        if (txt.equals(json)) {
+            log.info("Data is correctly returned");
+        } else {
+            log.error("Data is wrong returned");
         }
-
-
     }
-
+}

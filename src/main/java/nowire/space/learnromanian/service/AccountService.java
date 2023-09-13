@@ -1,6 +1,5 @@
 package nowire.space.learnromanian.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mailjet.client.errors.MailjetException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,9 +29,7 @@ import nowire.space.learnromanian.model.User;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -133,15 +129,14 @@ public class AccountService {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
-//    @PreAuthorize("hasRole('STUDENT')")
-//@RolesAllowed({"ADMIN", "PROFESSOR", "MODERATOR"})
+
     @RolesAllowed({"STUDENT"})
     public ResponseEntity<User> getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
        log.info("USER ROLE is {}", user.getRole().getRoleName() );
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-//    @PreAuthorize("Student")
+
     @RolesAllowed({"STUDENT"})
     public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
         Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
