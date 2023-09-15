@@ -105,6 +105,7 @@ public class RegistrationStepDefinitions {
                 .userPassword(encoder.encode(adminPassword))
                 .role(roleRepository.findByRoleId(1))
                 .userEnabled(true)
+                .userActivated(true)
                 .build();
 
         User savedAdminUser = userRepository.save(adminUser);
@@ -123,6 +124,7 @@ public class RegistrationStepDefinitions {
         savedUserId = userRepository.findByUserEmail(registrationRequest.getUserEmail()).get().getUserId();
         log.info("POST request was submitted by new user: {}.", registrationRequest.getUserFirstName().concat(" ")
                 .concat(registrationRequest.getUserFamilyName()));
+        log.info("user {}", userRepository.findByUserId(savedUserId));
     }
 
     @When("user submits POST registration request without email")
@@ -157,6 +159,10 @@ public class RegistrationStepDefinitions {
 
     @And("admin approves registration request")
     public void admin_approves_registration_request() throws Exception {
+        User user_active = userRepository.findByUserId(savedUserId).get();
+                user_active.setUserActivated(true);
+                userRepository.save(user_active);
+        log.info("User is active? {} ", userRepository.findByUserId(savedUserId));
         mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable")
                         .content(objectMapper.writeValueAsString(
                                 UserEnableRequest
