@@ -40,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = LearnromanianRestApplication.class)
 public class ProfileStepDefinitions {
 

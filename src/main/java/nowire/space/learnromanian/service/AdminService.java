@@ -25,9 +25,7 @@ public class AdminService {
 
     public ResponseEntity<String> enableAccount(UserEnableRequest request) {
         Optional<User> requestedUser = userRepository.findByUserId(request.getUserId());
-        String regexPattern = "^(.+)@(\\S+)$";
-        Pattern pat = Pattern.compile(regexPattern);
-        if (requestedUser.isPresent() && pat.matcher(requestedUser.get().getUserEmail()).matches()){
+        if (requestedUser.isPresent()) {
             if (!requestedUser.get().isUserEnabled() && requestedUser.get().isUserActivated()) {
                 Role requestedRole = roleRepository.getReferenceById(request.getRoleId());
                 requestedUser.get().setUserEnabled(true);
@@ -36,11 +34,10 @@ public class AdminService {
                 return new ResponseEntity<>(Message.ADMIN_VALIDATION_TRUE(updatedUser.getUserFirstName(),
                         updatedUser.getUserFamilyName(), updatedUser.getUserEmail()), HttpStatus.OK);
             }
-            return new ResponseEntity<>(Message.USER_NOT_ACTIVATED(request.getUserId()), HttpStatus.valueOf(400));
+            return new ResponseEntity<>(Message.USER_NOT_ACTIVATED(request.getUserId()), HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(Message.WRONG_EMAIL_ADDRESS,
                     HttpStatus.BAD_REQUEST);
-
         }
     }
 

@@ -13,8 +13,6 @@ public class Message {
 
     public static String USER_ACTIVATION_TRUE = "Your account was successfully activated.";
 
-    public static String ADMIN_VALIDATION_ERROR = "This account is already enabled.";
-
     public static String EMAIL_VALIDATION_SUBJECT = "Your new LearnRomanian account is here!";
 
     public static String EMAIL_PASSWORD_RESET_SUBJECT = "Your new LearnRomanian account password is here!";
@@ -59,6 +57,6 @@ public class Message {
     }
 
     public static String USER_NOT_ACTIVATED(Integer id) {
-        return "User with id ".concat(id.toString()).concat(" is not activated");
+        return "User with id ".concat(id.toString()).concat(" is not activated or not enabled!");
     }
 }
