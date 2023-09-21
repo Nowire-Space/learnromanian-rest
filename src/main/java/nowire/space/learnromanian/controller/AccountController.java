@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
+@CrossOrigin(origins = "${webapp.url}")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/account")
 public class AccountController {
 
     private final AccountService accountService;
+
 
     @PostMapping("/create")
     public ResponseEntity<String> createAccount(@Valid @RequestBody RegistrationRequest registrationRequest)
