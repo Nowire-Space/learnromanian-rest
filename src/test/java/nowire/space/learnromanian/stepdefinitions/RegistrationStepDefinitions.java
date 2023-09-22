@@ -138,7 +138,6 @@ public class RegistrationStepDefinitions {
                         .content(objectMapper.writeValueAsString(registrationRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-//                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_REGISTRATION_TRUE(
                         registrationRequest.getUserFirstName(), registrationRequest.getUserFamilyName(),
                         registrationRequest.getUserEmail())));
@@ -151,7 +150,7 @@ public class RegistrationStepDefinitions {
     @And("user validates provided email address")
     public void user_validates_provided_email_address() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/account/validate/".concat(valueCapture.getValue())).header("Access-Control-Request-Method", "POST")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin", webAppUrl)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_ACTIVATION_TRUE));
@@ -161,7 +160,7 @@ public class RegistrationStepDefinitions {
     @When("user submits POST registration request without email")
     public void user_submitsPOST_registration_request_without_email() throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/create").header("Access-Control-Request-Method", "POST")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin", webAppUrl)
                         .content(objectMapper.writeValueAsString(registrationRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -174,7 +173,7 @@ public class RegistrationStepDefinitions {
     @And("^admin proceeds with log in with (.*) and (.*)$")
     public void admin_proceeds_with_log_in(String adminEmail, String adminPassword) throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate").header("Access-Control-Request-Method", "POST")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin",webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 LoginRequest
                                         .builder()
@@ -193,7 +192,7 @@ public class RegistrationStepDefinitions {
     @And("admin approves registration request for not enabled account")
     public void admin_approves_registration_request_for_not_enabled_account() throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable").header("Access-Control-Request-Method", "POST")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin",webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 UserEnableRequest
                                         .builder()
@@ -213,7 +212,7 @@ public class RegistrationStepDefinitions {
     public void admin_rejects_registration_request() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/admin/reject/".concat(savedUserId.toString()))
                         .header("authorization", "Bearer ".concat(bearerToken)).header("Access-Control-Request-Method", "DELETE")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin", webAppUrl)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$")
@@ -224,7 +223,7 @@ public class RegistrationStepDefinitions {
     @And("admin approves registration request")
     public void admin_approves_registration_request() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable").header("Access-Control-Request-Method", "POST")
-                        .header("Origin", "${webapp.url}")
+                        .header("Origin", webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 UserEnableRequest
                                         .builder()

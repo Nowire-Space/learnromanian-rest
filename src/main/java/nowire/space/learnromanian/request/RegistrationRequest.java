@@ -4,14 +4,19 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.NumberFormat;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationRequest {
 
     @NotBlank
