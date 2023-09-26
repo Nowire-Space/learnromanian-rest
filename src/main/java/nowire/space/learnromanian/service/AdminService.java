@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class AdminService {
     public ResponseEntity<String> enableAccount(UserEnableRequest request) {
         Optional<User> requestedUser = userRepository.findByUserId(request.getUserId());
         if (requestedUser.isPresent()) {
-            if (!requestedUser.get().isUserEnabled()) {
+            if (!requestedUser.get().isUserEnabled() && requestedUser.get().isUserActivated()) {
                 Role requestedRole = roleRepository.getReferenceById(request.getRoleId());
                 requestedUser.get().setUserEnabled(true);
                 requestedUser.get().setRole(requestedRole);
@@ -33,9 +34,9 @@ public class AdminService {
                 return new ResponseEntity<>(Message.ADMIN_VALIDATION_TRUE(updatedUser.getUserFirstName(),
                         updatedUser.getUserFamilyName(), updatedUser.getUserEmail()), HttpStatus.OK);
             }
-            return new ResponseEntity<>(Message.ADMIN_VALIDATION_ERROR, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.USER_NOT_ACTIVATED(request.getUserId()), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(Message.ADMIN_VALIDATION_USER_NOT_FOUND(request.getUserId()),
+            return new ResponseEntity<>(Message.WRONG_EMAIL_ADDRESS,
                     HttpStatus.BAD_REQUEST);
         }
     }
