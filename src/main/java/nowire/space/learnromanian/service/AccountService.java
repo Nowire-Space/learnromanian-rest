@@ -1,12 +1,11 @@
 package nowire.space.learnromanian.service;
-
 import com.mailjet.client.errors.MailjetException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nowire.space.learnromanian.configuration.JwtService;
-import nowire.space.learnromanian.model.VerificationToken;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.repository.VerificationTokenRepository;
 import nowire.space.learnromanian.request.LoginRequest;
@@ -14,6 +13,8 @@ import nowire.space.learnromanian.request.PasswordResetRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
+import nowire.space.learnromanian.validator.AuthenticateValidator;
+import nowire.space.learnromanian.validator.CreateAccountConstraint;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import nowire.space.learnromanian.model.User;
-
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@CreateAccountConstraint
 public class AccountService {
 
     @Value("${registration.validation-token.expiration}")
@@ -50,45 +48,16 @@ public class AccountService {
 
     private final EmailService emailService;
 
-    public ResponseEntity<String> createAccount(RegistrationRequest registrationRequest) throws MailjetException {
-        VerificationToken token = VerificationToken.builder()
-                .token(UUID.randomUUID().toString())
-                .expiration(Date.from(LocalDateTime.now()
-                        .plusMinutes(validationTokenExpirationMinutes)
-                        .atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
+    private AuthenticateValidator authenticateValidator;
 
-        User newUser = User.builder()
-                .userFirstName(registrationRequest.getUserFirstName())
-                .userFamilyName(registrationRequest.getUserFamilyName())
-                .userEmail(registrationRequest.getUserEmail())
-                .userPhoneNumber(registrationRequest.getUserPhoneNumber())
-                .userPassword(passwordEncoder.encode(registrationRequest.getUserPassword()))
-                .token(token)
-                .userEnabled(false)
-                .userActivated(false)
-                .build();
-
-        User savedUser = userRepository.save(newUser);
-        if (savedUser.getUserId() != null) {
-            emailService.sendValidationEmail(savedUser.getUserEmail(), savedUser.getUserFirstName(),
-                    savedUser.getUserFamilyName(), savedUser.getToken().getToken());
-            return new ResponseEntity<>(Message.USER_REGISTRATION_TRUE(savedUser.getUserFirstName(),
-                    savedUser.getUserFamilyName(), savedUser.getUserEmail()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(Message.USER_REGISTRATION_ERROR, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> createAccount(@Valid RegistrationRequest registrationRequest){
+        User user =  userRepository.findByUserEmail(registrationRequest.getUserEmail()).get();
+        return new ResponseEntity<String>(Message.USER_REGISTRATION_TRUE(user.getUserFirstName(),user.getUserFamilyName(),user.getUserEmail()),HttpStatus.CREATED);
     }
 
-    public AuthenticationResponse authenticate(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
-                request.getPassword()));
-        User user = userRepository.findByUserEmail(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse
-                .builder()
-                .token(jwtToken)
-                .build();
+    public AuthenticationResponse authenticate(@Valid LoginRequest request) {
+       User user = userRepository.findByUserEmail(request.getUsername()).get();
+       return AuthenticationResponse.builder().token(user.getToken().getToken()).build();
     }
 
     @Transactional

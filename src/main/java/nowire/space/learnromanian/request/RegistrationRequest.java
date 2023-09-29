@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nowire.space.learnromanian.validator.CreateAccountConstraint;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@CreateAccountConstraint
 public class RegistrationRequest {
 
     @NotBlank
