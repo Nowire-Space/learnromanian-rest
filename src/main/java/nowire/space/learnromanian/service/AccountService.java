@@ -30,7 +30,6 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@CreateAccountConstraint
 public class AccountService {
 
     @Value("${registration.validation-token.expiration}")
@@ -47,8 +46,6 @@ public class AccountService {
     private final JwtService jwtService;
 
     private final EmailService emailService;
-
-    private AuthenticateValidator authenticateValidator;
 
     public ResponseEntity<String> createAccount(@Valid RegistrationRequest registrationRequest){
         User user =  userRepository.findByUserEmail(registrationRequest.getUserEmail()).get();
