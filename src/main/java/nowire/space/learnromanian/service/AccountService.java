@@ -13,6 +13,7 @@ import nowire.space.learnromanian.request.PasswordResetRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
+import nowire.space.learnromanian.validator.AuthenticateConstraint;
 import nowire.space.learnromanian.validator.AuthenticateValidator;
 import nowire.space.learnromanian.validator.CreateAccountConstraint;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,8 @@ public class AccountService {
 
     private final EmailService emailService;
 
+    private final AuthenticateValidator validator;
+
     public ResponseEntity<String> createAccount(@Valid RegistrationRequest registrationRequest){
         User user =  userRepository.findByUserEmail(registrationRequest.getUserEmail()).get();
         return new ResponseEntity<String>(Message.USER_REGISTRATION_TRUE(user.getUserFirstName(),user.getUserFamilyName(),user.getUserEmail()),HttpStatus.CREATED);
@@ -54,7 +57,7 @@ public class AccountService {
 
     public AuthenticationResponse authenticate(@Valid LoginRequest request) {
        User user = userRepository.findByUserEmail(request.getUsername()).get();
-       return AuthenticationResponse.builder().token(user.getToken().getToken()).build();
+       return AuthenticationResponse.builder().token(validator.getJwtToken()).build();
     }
 
     @Transactional
