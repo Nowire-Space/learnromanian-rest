@@ -1,8 +1,9 @@
 package nowire.space.learnromanian.service;
 import com.mailjet.client.errors.MailjetException;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nowire.space.learnromanian.configuration.JwtService;
@@ -13,19 +14,19 @@ import nowire.space.learnromanian.request.PasswordResetRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
 import nowire.space.learnromanian.util.Message;
-import nowire.space.learnromanian.validator.AuthenticateConstraint;
-import nowire.space.learnromanian.validator.AuthenticateValidator;
-import nowire.space.learnromanian.validator.CreateAccountConstraint;
+import nowire.space.learnromanian.validator.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import nowire.space.learnromanian.model.User;
+import org.springframework.validation.annotation.Validated;
+
+
 import java.util.*;
 
 @Slf4j
@@ -48,7 +49,10 @@ public class AccountService {
 
     private final EmailService emailService;
 
-    private final AuthenticateValidator validator;
+    private final AuthenticateValidator authenticateValidator;
+
+    private final ValidateAccountValidator validateAccountValidator;
+
 
     public ResponseEntity<String> createAccount(@Valid RegistrationRequest registrationRequest){
         User user =  userRepository.findByUserEmail(registrationRequest.getUserEmail()).get();
@@ -57,21 +61,12 @@ public class AccountService {
 
     public AuthenticationResponse authenticate(@Valid LoginRequest request) {
        User user = userRepository.findByUserEmail(request.getUsername()).get();
-       return AuthenticationResponse.builder().token(validator.getJwtToken()).build();
+       return AuthenticationResponse.builder().token(authenticateValidator.getJwtToken()).build();
     }
 
     @Transactional
-    public ResponseEntity<String> validate(String token) {
-        Optional<User> userOptional = userRepository.findUserByTokenToken(token);
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        User user = userOptional.get();
-        verificationTokenRepository.deleteById(user.getToken().getTokenId());
-        user.setUserActivated(true);
-        user.setToken(null);
-        userRepository.save(user);
-        return ResponseEntity.ok(Message.USER_ACTIVATION_TRUE);
+    public ResponseEntity<String> validate(@ValidateAccountConstraint @Valid @Nonnull String token) {
+        return ResponseEntity.ok("Token for this account is"+ "" + token);
     }
 
     public ResponseEntity<String> resetPassword(PasswordResetRequest request) throws MailjetException {
