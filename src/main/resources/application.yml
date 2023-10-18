@@ -17,7 +17,7 @@ spring:
     open-in-view: false
 server:
   servlet:
-    context-path: /learnromanian/v${APP_VERSION}/api
+    context-path: /learnromanian/${APP_VERSION}/api
   port: ${RUNNING_PORT}
 authentication:
   token:
