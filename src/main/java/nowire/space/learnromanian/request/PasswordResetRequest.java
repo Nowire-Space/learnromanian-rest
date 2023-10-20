@@ -9,7 +9,7 @@ import lombok.Data;
 public class PasswordResetRequest {
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 50, message = "{invalid.password.reset}")
     @Email
     private String email;
 }
