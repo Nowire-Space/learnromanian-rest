@@ -224,7 +224,7 @@ public class RegistrationStepDefinitions {
     @And("admin approves registration request")
     public void admin_approves_registration_request() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable").header("Access-Control-Request-Method", "POST")
-//                        .header("Origin", webAppUrl)
+                        .header("Origin", webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 UserEnableRequest
                                         .builder()

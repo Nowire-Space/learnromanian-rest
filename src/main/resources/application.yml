@@ -13,11 +13,11 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     open-in-view: false
 server:
   servlet:
-    context-path: /learnromanian/v${APP_VERSION}/api
+    context-path: /learnromanian/${APP_VERSION}/api
   port: ${RUNNING_PORT}
 authentication:
   token:

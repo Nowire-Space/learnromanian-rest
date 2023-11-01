@@ -23,8 +23,7 @@ public class AccountController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<String> createAccount(@Valid @RequestBody RegistrationRequest registrationRequest)
-            throws MailjetException {
+    public ResponseEntity<String> createAccount(@Valid @RequestBody RegistrationRequest registrationRequest){
         return accountService.createAccount(registrationRequest);
     }
 
