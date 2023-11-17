@@ -1,5 +1,6 @@
 package nowire.space.learnromanian.service;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import nowire.space.learnromanian.model.Role;
@@ -23,6 +24,7 @@ public class AdminService {
 
     private final RoleRepository roleRepository;
 
+    @RolesAllowed({"ADMIN"})
     public ResponseEntity<String> enableAccount(UserEnableRequest request) {
         Optional<User> requestedUser = userRepository.findByUserId(request.getUserId());
         if (requestedUser.isPresent()) {
@@ -41,6 +43,7 @@ public class AdminService {
         }
     }
 
+    @RolesAllowed("ADMIN")
     @Transactional
     public ResponseEntity<String> rejectAccount(String userId) {
         Integer deletedCount = userRepository.deleteByUserId(Integer.valueOf(userId));

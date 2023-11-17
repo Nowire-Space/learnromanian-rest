@@ -46,6 +46,7 @@ public class AccountService {
         User user =  userRepository.findByUserEmail(registrationRequest.getUserEmail()).get();
         return new ResponseEntity<String>(Message.USER_REGISTRATION_TRUE(user.getUserFirstName(),user.getUserFamilyName(),user.getUserEmail()),HttpStatus.CREATED);
     }
+
     public AuthenticationResponse authenticate(@Valid LoginRequest request) {
        User user = userRepository.findByUserEmail(request.getUsername()).get();
         String jwtToken = jwtService.generateToken(user);
@@ -92,14 +93,15 @@ public class AccountService {
                 .toString();
     }
 
-    @RolesAllowed({"STUDENT"})
+    @RolesAllowed({"MODERATOR", "PROFESSOR"})
+//    @PreAuthorize("hasPermission(#username, 'STUDENT')")
     public ResponseEntity<User> getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
        log.info("USER ROLE is {}", user.getRole().getRoleName() );
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @RolesAllowed({"STUDENT"})
+    @RolesAllowed({"MODERATOR", "PROFESSOR"})
     public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
         Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, rowsPerPage, sort);
