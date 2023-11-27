@@ -94,7 +94,6 @@ public class AccountService {
     }
 
     @RolesAllowed({"MODERATOR", "PROFESSOR"})
-//    @PreAuthorize("hasPermission(#username, 'STUDENT')")
     public ResponseEntity<User> getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
        log.info("USER ROLE is {}", user.getRole().getRoleName() );
@@ -109,3 +108,4 @@ public class AccountService {
         return new PageImpl<>(users, pageable, users.size());
     }
 }
+
