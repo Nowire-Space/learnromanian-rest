@@ -129,7 +129,7 @@ public class SecurityStepDefinitions {
     }
 
 
-    @And("^admin is logging with (.*) and (.*)$")
+    @When("^admin is logging with (.*) and (.*)$")
     public void admin_log_in(String adminEmail, String adminPassword) throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate").header("Access-Control-Request-Method", "POST")
                         .header("Origin",webAppUrl)
