@@ -29,7 +29,6 @@ public class User implements UserDetails{
     @Column(name="user_family_name")
     protected String userFamilyName;
 
-
     @Column(name="user_password")
     protected String userPassword;
 
@@ -58,6 +57,10 @@ public class User implements UserDetails{
 
     @Column(name="user_activated")
     protected boolean userActivated;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_id")
+    protected Team team;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
