@@ -15,24 +15,23 @@ public class TeamController {
 
     private TeamService teamService;
 
-    @RolesAllowed("{ADMIN, MODERATOR, PROFESSOR}")
     @PostMapping("/create")
     public ResponseEntity<String> createTeam(@RequestBody TeamRequest teamRequest){
         return teamService.createTeam(teamRequest);
     }
 
-    @RolesAllowed("{ADMIN, MODERATOR, PROFESSOR}")
+
     @PostMapping("/add/{username}")
     public ResponseEntity<String> addStudent(@PathVariable String username, @RequestParam String teamName){
         return teamService.addStudent(username, teamName);
     }
-    @RolesAllowed("{ADMIN, MODERATOR, PROFESSOR}")
+
     @DeleteMapping("/remove/{username}")
     public boolean removeStudent(@PathVariable String username){
 
         return true;
     }
-    @RolesAllowed("{ADMIN, MODERATOR, PROFESSOR}")
+
     @PostMapping("/move/{username}")
     public ResponseEntity<String> move (@PathVariable String username){
 

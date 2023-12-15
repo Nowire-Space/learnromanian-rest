@@ -1,5 +1,6 @@
 package nowire.space.learnromanian.service;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,13 @@ public class TeamService {
     private TeamRepository teamRepository;
     private UserRepository userRepository;
 
+    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
             if (teamRequest != null) {
                 Team newTeam = (teamRepository.findByName(teamRequest.getName()) != null) ? teamRepository.findByName(teamRequest.getName())
                         :Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).users(teamRequest.getStudents()).build();
                 Team savedTeam = teamRepository.save(newTeam);
-                log.info(savedTeam.getUsers().toString());
+                log.info("Team created {}", savedTeam.getDescription());
                 return new ResponseEntity<>(Message.TEAM_CREATED(teamRequest.getName(),teamRequest.getDescription()), HttpStatus.OK);
             }
 
@@ -40,7 +42,7 @@ public class TeamService {
             }
 
     }
-
+    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> addStudent(String username, String teamName) {
 
         Team team = teamRepository.findByName(teamName);
