@@ -62,7 +62,7 @@ public class Message {
     }
 
     public static String USER_ADDED_TO_THE_TEAM(String username){
-        return "User with the email".concat(username).concat("was added to the team");
+        return "User with the email ".concat(username).concat(" was added to the team");
     }
 
     public static String TEAM_CREATED(String name, String description){

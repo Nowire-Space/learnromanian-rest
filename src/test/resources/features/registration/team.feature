@@ -7,7 +7,7 @@ Feature: Team
     And active and enabled user with <userFamilyName>, <userFirstName>, <phoneNumber>, <email> and <password>
     And active and enabled student with <studentFamilyName>, <studentFirstName>, <studentPhoneNumber>, <studentEmail> and <studentPassword>
     When user submit POST team request for team creation !
-    Then student <studentUser> is added to the team <name>.
+    Then student <studentEmail> is added to the team <name>.
 
 
 

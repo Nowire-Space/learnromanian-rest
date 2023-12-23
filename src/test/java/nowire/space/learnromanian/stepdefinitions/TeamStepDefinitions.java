@@ -14,6 +14,7 @@ import nowire.space.learnromanian.LearnromanianRestApplication;
 import nowire.space.learnromanian.model.Role;
 import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.RoleRepository;
+import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.request.TeamRequest;
 import nowire.space.learnromanian.service.EmailService;
@@ -74,6 +75,9 @@ public class TeamStepDefinitions {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Before("@Team")
     public void setUp() throws MailjetException {
@@ -108,13 +112,14 @@ public class TeamStepDefinitions {
                .userEnabled(true)
                .role(roleRepository.findByRoleId(3))
                .build();
+       userRepository.save(user);
 
        return new ResponseEntity<>("The user with the role" + user.getRole() + "username" + user.getUserFamilyName()+ "is saved in DB",HttpStatus.OK);
     }
 
     @And("^active and enabled student with (.*), (.*), (.*), (.*) and (.*)$")
     public ResponseEntity<String> saveStudent(String studentFamilyName, String studentFirstName, String studentPhoneNumber, String studentEmail, String studentPassword) {
-        User user = User.builder().userFamilyName(studentFamilyName)
+        User student = User.builder().userFamilyName(studentFamilyName)
                 .userFirstName(studentFirstName)
                 .userPhoneNumber(studentPhoneNumber)
                 .userEmail(studentEmail)
@@ -123,8 +128,9 @@ public class TeamStepDefinitions {
                 .userEnabled(true)
                 .role(roleRepository.findByRoleId(4))
                 .build();
+        userRepository.save(student);
 
-        return new ResponseEntity<>("The student with the role" + user.getRole() + "username" + user.getUserFamilyName()+ "is saved in DB",HttpStatus.OK);
+        return new ResponseEntity<>("The student with the role" + student.getRole() + "username" + student.getUserFamilyName()+ "is saved in DB",HttpStatus.OK);
 
 
     }
@@ -141,28 +147,19 @@ public class TeamStepDefinitions {
                 log.info("POST request was submitted for team name: {}  and team description: {}.", teamRequest.getName(), teamRequest.getDescription());
     }
 
-
-    @Then("user is added to the team.")
-    public void userIsAddedToTheTeam() {
-    }
-
-    @When("^user is logging with (.*) and (.*)$")
-    public void userIsLoggingWithAnd(String email, String password) throws Exception {
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate").header("Access-Control-Request-Method", "POST")
+    @Then("^student (.*) is added to the team (.*).$")
+    public void userIsAddedToTheTeam(String studentEmail, String name) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/team/addStudent/{username}/{teamName}", studentEmail, name).header("Access-Control-Request-Method", "POST")
                         .header("Origin",webAppUrl)
-                        .content(objectMapper.writeValueAsString(
-                                LoginRequest
-                                        .builder()
-                                        .username(email)
-                                        .password(password)
-                                        .build()))
+                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
+                        .content(objectMapper.writeValueAsString(teamRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.OK.value()))
-                .andReturn();
-
-        bearerToken = JsonPath.read(response.getResponse().getContentAsString(), "$.token");
-        log.info("Admin auth token is: {}.", bearerToken);
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_ADDED_TO_THE_TEAM(studentEmail)));
+        log.info("Student with the Family Name : {} and First Name: {} was added to the team  {} ", userRepository.findByUserEmail(studentEmail).get().getUserFamilyName()
+                ,userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamRequest.getDescription());
     }
+
+
     }
 

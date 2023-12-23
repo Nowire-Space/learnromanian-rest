@@ -21,14 +21,14 @@ public class TeamController {
     }
 
 
-    @PostMapping("/add/{username}")
-    public ResponseEntity<String> addStudent(@PathVariable String username, @RequestParam String teamName){
+//    @PostMapping("/addStudent/{username}/{teamName}")
+    @PostMapping(value = {"/addStudent/{username}", "/addStudent/{username}/{teamName}"})
+    public ResponseEntity<String> addStudent(@PathVariable String username, @PathVariable String teamName){
         return teamService.addStudent(username, teamName);
     }
 
     @DeleteMapping("/remove/{username}")
     public boolean removeStudent(@PathVariable String username){
-
         return true;
     }
 
