@@ -47,8 +47,8 @@ public class TeamService {
         if (!team.getUsers().isEmpty() && user != null) {
             Set<User> users = team.getUsers();
             users.add(user);
-            team.getUsers().forEach(user1 -> user1.getUserFamilyName());
             teamRepository.save(team);
+            team.getUsers().forEach(user1 -> log.info("The team has following users {}", user1.getUserFamilyName()));
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         } else if (user != null) {
             Set<User> users = new HashSet<>();
