@@ -12,8 +12,10 @@ import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import nowire.space.learnromanian.LearnromanianRestApplication;
 import nowire.space.learnromanian.model.Role;
+import nowire.space.learnromanian.model.Team;
 import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.RoleRepository;
+import nowire.space.learnromanian.repository.TeamRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.request.TeamRequest;
@@ -39,9 +41,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -61,6 +63,9 @@ public class TeamStepDefinitions {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
     @MockBean
     private EmailService emailServiceMock;
 
@@ -69,8 +74,7 @@ public class TeamStepDefinitions {
     private TeamRequest teamRequest;
 
     private final ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
-
-    private String bearerToken;
+    
 
     @Autowired
     private PasswordEncoder encoder;
@@ -96,7 +100,8 @@ public class TeamStepDefinitions {
 
     @Given("^team registration request with (.*) and (.*)$")
     public void teamRegistrationRequestWithAnd(String name, String description) {
-        teamRequest = TeamRequest.builder().name(name).description(description).build();
+        Set <User> users = new HashSet<>();
+        teamRequest = TeamRequest.builder().name(name).description(description).students(users).build();
         log.info("team with {} was created", name);
     }
 
@@ -160,6 +165,32 @@ public class TeamStepDefinitions {
                 ,userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamRequest.getDescription());
     }
 
-
+    @And("^user with the email address (.*) added to the team (.*).")
+    public void userWithTheEmailAddressAddedToTheTeam(String username, String name) throws Exception {
+        User user = userRepository.findByUserEmail(username).get();
+        Team team = Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).users(teamRequest.getStudents()).build();
+        team.setUsers(Set.of(user));
+        teamRepository.save(team);
     }
+
+    @And("^user make a delete request for the username (.*) from the team (.*)")
+    public void userMakeADeleteRequestForTheUsernameFromTheTeam(String studentEmail, String name) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/team/remove/{username}/{teamName}", studentEmail, name).header("Access-Control-Request-Method", "DELETE")
+                        .header("Origin", webAppUrl)
+                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
+                        .content(objectMapper.writeValueAsString(teamRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_REMOVED_FROM_THE_TEAM(studentEmail)));
+    }
+
+
+    @Then("^user with the username (.*) is deleted from the team.")
+    public void userWithTheUsernameIsDeletedFromTheTeam(String username) {
+        Optional<User> savedUser = userRepository.findByUserEmail(username);
+        User saved  = savedUser.get();
+        assertThat(savedUser.isPresent()).isFalse();
+        log.info("Assertions passed.");
+    }
+}
 

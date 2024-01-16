@@ -24,6 +24,7 @@ public class TeamService {
 
     private TeamRepository teamRepository;
     private UserRepository userRepository;
+    private Set<User> users ;
 
 
     @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
@@ -44,22 +45,51 @@ public class TeamService {
     public ResponseEntity<String> addStudent(String username, String teamName) {
         Team team = teamRepository.findByName(teamName);
         User user = userRepository.findByUserEmail(username).get();
-        if (!team.getUsers().isEmpty() && user != null) {
-            Set<User> users = team.getUsers();
+        if (!team.getUsers().isEmpty()) {
+            users = team.getUsers();
             users.add(user);
             teamRepository.save(team);
             team.getUsers().forEach(user1 -> log.info("The team has following users {}", user1.getUserFamilyName()));
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         } else if (user != null) {
-            Set<User> users = new HashSet<>();
             users.add(user);
             team.setUsers(users);
             teamRepository.save(team);
+            team.getUsers();
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    public ResponseEntity<String> removeStudent(String username, String teamName){
+        Team team = teamRepository.findByName(teamName);
+        User user = userRepository.findByUserEmail(username).get();
+        if (team != null && team.getUsers().remove(user)){
+            teamRepository.save(team);
+            return new ResponseEntity<>(Message.USER_REMOVED_FROM_THE_TEAM(username), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    public ResponseEntity<String> move(String username, String actualTeamName, String newTeamName) {
+       Team actualTeam = teamRepository.findByName(actualTeamName);
+       Team newTeam = teamRepository.findByName(newTeamName);
+       User user = userRepository.findByUserEmail(username).get();
+       if (actualTeam != null && newTeam != null && actualTeam.getUsers().contains(username)){
+           actualTeam.getUsers().remove(user);
+           teamRepository.save(actualTeam);
+           newTeam.getUsers().add(user);
+           teamRepository.save(newTeam);
+           return new ResponseEntity<>(Message.USER_MOVED_TO_OTHER_TEAM(username, actualTeamName, newTeamName), HttpStatus.OK);
+       }
+       else {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       }
+
     }
 }
 

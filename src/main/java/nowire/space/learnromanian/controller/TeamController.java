@@ -21,21 +21,19 @@ public class TeamController {
     }
 
 
-//    @PostMapping("/addStudent/{username}/{teamName}")
     @PostMapping(value = {"/addStudent/{username}", "/addStudent/{username}/{teamName}"})
     public ResponseEntity<String> addStudent(@PathVariable String username, @PathVariable String teamName){
         return teamService.addStudent(username, teamName);
     }
 
-    @DeleteMapping("/remove/{username}")
-    public boolean removeStudent(@PathVariable String username){
-        return true;
+    @DeleteMapping(value = {"/remove/{username}","/remove/{username}/{teamName}"})
+    public ResponseEntity<String> removeStudent(@PathVariable String username, @PathVariable String teamName){
+        return teamService.removeStudent(username, teamName);
     }
 
-    @PostMapping("/move/{username}")
-    public ResponseEntity<String> move (@PathVariable String username){
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping(value = {"/move/{username}", "/move/{username}/{actualTeamName}", "/move/{username}/{actualTeamName}/{newTeamName}"})
+    public ResponseEntity<String> move (@PathVariable String username, String actualTeamName, String newTeamName){
+        return teamService.move(username,actualTeamName,newTeamName);
     }
 
 

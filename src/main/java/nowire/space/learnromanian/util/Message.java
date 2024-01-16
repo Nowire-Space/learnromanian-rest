@@ -65,6 +65,15 @@ public class Message {
         return "User with the email ".concat(username).concat(" was added to the team");
     }
 
+    public static String USER_REMOVED_FROM_THE_TEAM(String username){
+        return "User with the email ".concat(username).concat(" was removed from the team");
+    }
+
+    public static String USER_MOVED_TO_OTHER_TEAM (String username, String actualTeam, String newTeam){
+        return "User with the email ".concat(username).concat(" was moved from the team ").concat(actualTeam).concat(" to the team ").concat(newTeam);
+    }
+
+
     public static String TEAM_CREATED(String name, String description){
         return "Team with the name".concat(name).concat(" and description ").concat(description).concat("was created!");
     }
