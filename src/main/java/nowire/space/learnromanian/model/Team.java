@@ -21,12 +21,14 @@ public class Team {
     @Column(name = "name")
     private String name;
 
-
     @Column(name = "description")
     private String description;
 
-
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
-    private Set<User> users;
+    private Set<User> students;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id")
+    private User teamHead;
 
 }

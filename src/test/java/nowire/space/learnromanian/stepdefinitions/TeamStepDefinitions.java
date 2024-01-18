@@ -18,6 +18,7 @@ import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.TeamRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
+import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.request.TeamRequest;
 import nowire.space.learnromanian.service.EmailService;
 import nowire.space.learnromanian.util.Enum;
@@ -61,6 +62,10 @@ public class TeamStepDefinitions {
     private String webAppUrl;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
@@ -74,7 +79,6 @@ public class TeamStepDefinitions {
     private TeamRequest teamRequest;
 
     private final ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
-    
 
     @Autowired
     private PasswordEncoder encoder;
@@ -82,6 +86,7 @@ public class TeamStepDefinitions {
     @Autowired
     private UserRepository userRepository;
 
+    private String bearerToken;
 
     @Before("@Team")
     public void setUp() throws MailjetException {
@@ -92,11 +97,108 @@ public class TeamStepDefinitions {
         roles.add(new Role(2, Enum.Role.MODERATOR));
         roles.add(new Role(3, Enum.Role.PROFESSOR));
         roles.add(new Role(4, Enum.Role.STUDENT));
-        roleRepository.saveAll(roles);
-        log.info("Roles saved to DB.");
+        List<Role> savedRoles = roleRepository.saveAll(roles);
+        log.info("Roles saved to DB: {}", savedRoles);
 
         doNothing().when(emailServiceMock).sendValidationEmail(anyString(), anyString(), anyString(), valueCapture.capture());
     }
+
+    //TODO
+    @Given("^active team admin and professor users with (.*), (.*), (.*), (.*), (.*), (.*), (.*), (.*), (.*) and (.*)$")
+    public void save_admin_user(String familyName, String firstName, String phoneNumber, String email,
+                                          String password, String professorFamilyName, String professorFirstName, String professorPhoneNumber,
+                                String professorEmail, String professorPassword) {
+
+        passwordEncoder.encode("john.doe");
+
+        User adminUser = User.builder()
+                .userFamilyName(familyName)
+                .userFirstName(firstName)
+                .userPhoneNumber(phoneNumber)
+                .userEmail(email)
+                .userPassword(encoder.encode(password))
+                .role(roleRepository.findByRoleId(1))
+                .userEnabled(true)
+                .userActivated(true)
+                .build();
+
+                User professorUser = User.builder()
+                .userFamilyName(professorFamilyName)
+                .userFirstName(professorFirstName)
+                .userPhoneNumber(professorPhoneNumber)
+                .userEmail(professorEmail)
+                .userPassword(encoder.encode(professorPassword))
+                .role(roleRepository.findByRoleId(3))
+                .userEnabled(true)
+                .userActivated(true)
+                .build();
+
+        User savedAdminUser = userRepository.save(adminUser);
+        User savedProfessorUser = userRepository.save(professorUser);
+        log.info("Saved users {}, {} with role {}, {} to the H2 DB.", savedAdminUser.getUserEmail(), savedProfessorUser.getUserEmail(),
+                savedAdminUser.getRole().getRoleName(), savedProfessorUser.getRole().getRoleName());
+    }
+
+//    @Given("^active team professor user with (.*), (.*), (.*), (.*) and (.*)$")
+//    public void save_professor_user(String familyName, String firstName, String phoneNumber, String email,
+//                                          String password) {
+//        log.error("Saved users: {}", userRepository.findAll());
+//        User professorUser = User.builder()
+//                .userFamilyName(familyName)
+//                .userFirstName(firstName)
+//                .userPhoneNumber(phoneNumber)
+//                .userEmail(email)
+//                .userPassword(encoder.encode(password))
+//                .role(roleRepository.findByRoleId(3))
+//                .userEnabled(true)
+//                .userActivated(true)
+//                .build();
+//
+//        User savedProfessorUser = userRepository.save(professorUser);
+//        log.info("Saved user {} with role {} to the H2 DB.", savedProfessorUser.getUserEmail(), savedProfessorUser.getRole().getRoleName());
+//    }
+
+    @When("^team admin proceeds with log in with (.*) and (.*)$")
+    public void admin_proceeds_with_log_in(String adminEmail, String adminPassword) throws Exception {
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/account/authenticate")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Origin",webAppUrl)
+                        .content(objectMapper.writeValueAsString(
+                                LoginRequest
+                                        .builder()
+                                        .username(adminEmail)
+                                        .password(adminPassword)
+                                        .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.OK.value()))
+                .andReturn();
+
+        bearerToken = JsonPath.read(response.getResponse().getContentAsString(), "$.token");
+        log.info("Admin auth token is: {}.", bearerToken);
+    }
+
+    @When("^admin user submits POST team request for team creation with (.*) and (.*)$")
+    public void user_submitsPOST_new_team_request(String teamName, String teamDescription) throws Exception {
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/team/create")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Origin",webAppUrl)
+                        .content(objectMapper.writeValueAsString(
+                                TeamRequest
+                                        .builder()
+                                        .name(teamName)
+                                        .description(teamDescription)
+                                        .build()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.OK.value()))
+                .andReturn();
+
+        log.info("Admin created new team: {}.", teamName);
+    }
+
 
     @Given("^team registration request with (.*) and (.*)$")
     public void teamRegistrationRequestWithAnd(String name, String description) {
@@ -142,13 +244,15 @@ public class TeamStepDefinitions {
     @When("^user submit POST team request for team creation !")
     @WithMockUser(username = "john.doe@mail.com")
     public void teamCreation () throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/team/create").header("Access-Control-Request-Method", "POST")
-                        .header("Origin",webAppUrl)
+        mockMvc.perform(MockMvcRequestBuilders.post("/team/create")
+//                        .header("Access-Control-Request-Method", "POST")
+//                        .header("Origin",webAppUrl)
                         .with(user("john.doe@mail.com").roles("PROFESSOR"))
                         .content(objectMapper.writeValueAsString(teamRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.TEAM_CREATED(teamRequest.getName(),teamRequest.getDescription())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$")
+                        .value(Message.TEAM_CREATED(teamRequest.getName(),teamRequest.getDescription())));
                 log.info("POST request was submitted for team name: {}  and team description: {}.", teamRequest.getName(), teamRequest.getDescription());
     }
 
@@ -168,8 +272,8 @@ public class TeamStepDefinitions {
     @And("^user with the email address (.*) added to the team (.*).")
     public void userWithTheEmailAddressAddedToTheTeam(String username, String name) throws Exception {
         User user = userRepository.findByUserEmail(username).get();
-        Team team = Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).users(teamRequest.getStudents()).build();
-        team.setUsers(Set.of(user));
+        Team team = Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).students(teamRequest.getStudents()).build();
+        team.setStudents(Set.of(user));
         teamRepository.save(team);
     }
 

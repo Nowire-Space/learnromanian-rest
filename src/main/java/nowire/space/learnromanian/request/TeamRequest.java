@@ -1,5 +1,7 @@
 package nowire.space.learnromanian.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,14 +10,20 @@ import nowire.space.learnromanian.model.User;
 
 import java.util.Set;
 
-@Builder
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class TeamRequest {
 
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String name;
+
+    @NotBlank
+    @Size(min = 2, max = 20)
     private String description;
     private Set<User> students;
 
 }
+

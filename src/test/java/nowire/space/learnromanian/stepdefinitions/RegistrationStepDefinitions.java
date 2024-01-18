@@ -173,7 +173,9 @@ public class RegistrationStepDefinitions {
 
     @And("^admin proceeds with log in with (.*) and (.*)$")
     public void admin_proceeds_with_log_in(String adminEmail, String adminPassword) throws Exception {
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate").header("Access-Control-Request-Method", "POST")
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/account/authenticate")
+                        .header("Access-Control-Request-Method", "POST")
                         .header("Origin",webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 LoginRequest

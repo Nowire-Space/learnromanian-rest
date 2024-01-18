@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/team")
 public class TeamController {
 
-    private TeamService teamService;
+    private final TeamService teamService;
 
     @PostMapping("/create")
     public ResponseEntity<String> createTeam(@RequestBody TeamRequest teamRequest){
@@ -35,6 +35,5 @@ public class TeamController {
     public ResponseEntity<String> move (@PathVariable String username, String actualTeamName, String newTeamName){
         return teamService.move(username,actualTeamName,newTeamName);
     }
-
 
 }

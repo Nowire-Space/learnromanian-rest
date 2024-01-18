@@ -131,7 +131,8 @@ public class SecurityStepDefinitions {
 
     @When("^admin is logging with (.*) and (.*)$")
     public void admin_log_in(String adminEmail, String adminPassword) throws Exception {
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate").header("Access-Control-Request-Method", "POST")
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate")
+                        .header("Access-Control-Request-Method", "POST")
                         .header("Origin",webAppUrl)
                         .content(objectMapper.writeValueAsString(
                                 LoginRequest
@@ -150,7 +151,8 @@ public class SecurityStepDefinitions {
 
     @And("^admin enable the user account")
     public void admin_enable_user_account() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable").header("Access-Control-Request-Method", "POST")
+        mockMvc.perform(MockMvcRequestBuilders.post("/admin/enable")
+                        .header("Access-Control-Request-Method", "POST")
                         .header("Origin", webAppUrl)
                         .with(user("admin").roles("ADMIN"))
                         .content(objectMapper.writeValueAsString(

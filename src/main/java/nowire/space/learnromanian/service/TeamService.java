@@ -22,16 +22,19 @@ import java.util.Set;
 @AllArgsConstructor
 public class TeamService {
 
-    private TeamRepository teamRepository;
-    private UserRepository userRepository;
-    private Set<User> users ;
+    private final TeamRepository teamRepository;
 
+    private final UserRepository userRepository;
 
-    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    private Set<User> users;
+
+//    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
             if (teamRequest != null) {
                 Team newTeam = (teamRepository.findByName(teamRequest.getName()) != null) ? teamRepository.findByName(teamRequest.getName())
-                        :Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).users(teamRequest.getStudents()).build();
+                        : Team.builder()
+                        .name(teamRequest.getName()).description(teamRequest.getDescription())
+                        .students(teamRequest.getStudents()).build();
                 Team savedTeam = teamRepository.save(newTeam);
                 log.info("Team created {}", savedTeam.getDescription());
                 return new ResponseEntity<>(Message.TEAM_CREATED(teamRequest.getName(),teamRequest.getDescription()), HttpStatus.OK);
@@ -45,17 +48,17 @@ public class TeamService {
     public ResponseEntity<String> addStudent(String username, String teamName) {
         Team team = teamRepository.findByName(teamName);
         User user = userRepository.findByUserEmail(username).get();
-        if (!team.getUsers().isEmpty()) {
-            users = team.getUsers();
+        if (!team.getStudents().isEmpty()) {
+            users = team.getStudents();
             users.add(user);
             teamRepository.save(team);
-            team.getUsers().forEach(user1 -> log.info("The team has following users {}", user1.getUserFamilyName()));
+            team.getStudents().forEach(user1 -> log.info("The team has following users {}", user1.getUserFamilyName()));
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         } else if (user != null) {
             users.add(user);
-            team.setUsers(users);
+            team.setStudents(users);
             teamRepository.save(team);
-            team.getUsers();
+            team.getStudents();
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         }
         else{
@@ -66,7 +69,7 @@ public class TeamService {
     public ResponseEntity<String> removeStudent(String username, String teamName){
         Team team = teamRepository.findByName(teamName);
         User user = userRepository.findByUserEmail(username).get();
-        if (team != null && team.getUsers().remove(user)){
+        if (team != null && team.getStudents().remove(user)){
             teamRepository.save(team);
             return new ResponseEntity<>(Message.USER_REMOVED_FROM_THE_TEAM(username), HttpStatus.OK);
         }
@@ -79,10 +82,10 @@ public class TeamService {
        Team actualTeam = teamRepository.findByName(actualTeamName);
        Team newTeam = teamRepository.findByName(newTeamName);
        User user = userRepository.findByUserEmail(username).get();
-       if (actualTeam != null && newTeam != null && actualTeam.getUsers().contains(username)){
-           actualTeam.getUsers().remove(user);
+       if (actualTeam != null && newTeam != null && actualTeam.getStudents().contains(username)){
+           actualTeam.getStudents().remove(user);
            teamRepository.save(actualTeam);
-           newTeam.getUsers().add(user);
+           newTeam.getStudents().add(user);
            teamRepository.save(newTeam);
            return new ResponseEntity<>(Message.USER_MOVED_TO_OTHER_TEAM(username, actualTeamName, newTeamName), HttpStatus.OK);
        }

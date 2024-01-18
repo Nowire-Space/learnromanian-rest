@@ -48,7 +48,9 @@ public class AccountController {
 
     }
     @GetMapping
-    public Page<User> get(@RequestParam int page, @RequestParam int rowsPerPage, @RequestParam(required = false, defaultValue = "userFamilyName") String sortBy, @RequestParam(required = false, defaultValue = "false") boolean desc){
+    public Page<User> get(@RequestParam int page, @RequestParam int rowsPerPage, @RequestParam(required = false,
+            defaultValue = "userFamilyName") String sortBy,
+                          @RequestParam(required = false, defaultValue = "false") boolean desc){
         return accountService.getAll(page, rowsPerPage, sortBy, desc);
     }
 }
