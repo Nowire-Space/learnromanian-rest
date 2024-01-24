@@ -28,7 +28,7 @@ public class TeamService {
 
     private Set<User> users;
 
-//    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
             if (teamRequest != null) {
                 Team newTeam = (teamRepository.findByName(teamRequest.getName()) != null) ? teamRepository.findByName(teamRequest.getName())

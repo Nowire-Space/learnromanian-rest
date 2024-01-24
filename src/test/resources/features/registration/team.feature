@@ -4,7 +4,6 @@ Feature: Teams management
 
   Scenario Outline: Positive scenario: Admin user submits POST request with new team request body, data is saved to the DB.
     Given active team admin and professor users with <adminFamilyName>, <adminFirstName>, <adminPhoneNumber>, <adminEmail>, <adminPassword>, <professorFamilyName>, <professorFirstName>, <professorPhoneNumber>, <professorEmail> and <professorPassword>
-#    And active team professor user with <professorFamilyName>, <professorFirstName>, <professorPhoneNumber>, <professorEmail> and <professorPassword>
     When team admin proceeds with log in with <adminEmail> and <adminPassword>
     And admin user submits POST team request for team creation with <teamName> and <teamDescription>
     Then new team with <teamName>, <teamDescription> is created and team head is <professorEmail>

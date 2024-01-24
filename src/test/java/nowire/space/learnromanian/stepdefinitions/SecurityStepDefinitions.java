@@ -128,7 +128,6 @@ public class SecurityStepDefinitions {
         log.info("Saved user {} with role {} to H2 DB.", savedAdminUser.getUserEmail(), savedAdminUser.getRole().getRoleName());
     }
 
-
     @When("^admin is logging with (.*) and (.*)$")
     public void admin_log_in(String adminEmail, String adminPassword) throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/account/authenticate")

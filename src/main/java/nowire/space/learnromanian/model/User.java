@@ -58,7 +58,7 @@ public class User implements UserDetails{
     @Column(name="user_activated")
     protected boolean userActivated;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     protected Team team;
 

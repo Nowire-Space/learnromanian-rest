@@ -139,25 +139,6 @@ public class TeamStepDefinitions {
                 savedAdminUser.getRole().getRoleName(), savedProfessorUser.getRole().getRoleName());
     }
 
-//    @Given("^active team professor user with (.*), (.*), (.*), (.*) and (.*)$")
-//    public void save_professor_user(String familyName, String firstName, String phoneNumber, String email,
-//                                          String password) {
-//        log.error("Saved users: {}", userRepository.findAll());
-//        User professorUser = User.builder()
-//                .userFamilyName(familyName)
-//                .userFirstName(firstName)
-//                .userPhoneNumber(phoneNumber)
-//                .userEmail(email)
-//                .userPassword(encoder.encode(password))
-//                .role(roleRepository.findByRoleId(3))
-//                .userEnabled(true)
-//                .userActivated(true)
-//                .build();
-//
-//        User savedProfessorUser = userRepository.save(professorUser);
-//        log.info("Saved user {} with role {} to the H2 DB.", savedProfessorUser.getUserEmail(), savedProfessorUser.getRole().getRoleName());
-//    }
-
     @When("^team admin proceeds with log in with (.*) and (.*)$")
     public void admin_proceeds_with_log_in(String adminEmail, String adminPassword) throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders
@@ -181,20 +162,15 @@ public class TeamStepDefinitions {
 
     @When("^admin user submits POST team request for team creation with (.*) and (.*)$")
     public void user_submitsPOST_new_team_request(String teamName, String teamDescription) throws Exception {
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/team/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/team/create")
                         .header("Access-Control-Request-Method", "POST")
                         .header("Origin",webAppUrl)
-                        .content(objectMapper.writeValueAsString(
-                                TeamRequest
-                                        .builder()
-                                        .name(teamName)
-                                        .description(teamDescription)
-                                        .build()))
+                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
+                        .content(objectMapper.writeValueAsString(TeamRequest.builder().name(teamName).description(teamDescription).build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.OK.value()))
-                .andReturn();
+                .andExpect(MockMvcResultMatchers.jsonPath("$")
+                        .value(Message.TEAM_CREATED(teamName,teamDescription)));
 
         log.info("Admin created new team: {}.", teamName);
     }
@@ -295,6 +271,14 @@ public class TeamStepDefinitions {
         User saved  = savedUser.get();
         assertThat(savedUser.isPresent()).isFalse();
         log.info("Assertions passed.");
+    }
+
+    @Then("^new team with (.*), (.*) is created and team head is (.*)$")
+    public void newTeamWithIsCreatedAndTeamHeadIs(String teamName, String teamDescription, String professorEmail) {
+        Team teamCreated = teamRepository.findByName(teamName);
+        assertThat(teamCreated.getDescription()==teamDescription && teamCreated.getTeamHead().getUserEmail()==professorEmail).isFalse();
+        log.info("Assertion passed !" + teamCreated.getDescription() + teamCreated.getName() + teamCreated.getTeamHead().getUserEmail());
+
     }
 }
 

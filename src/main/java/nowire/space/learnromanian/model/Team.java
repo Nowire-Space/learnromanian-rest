@@ -24,11 +24,16 @@ public class Team {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "team", orphanRemoval = true)
     private Set<User> students;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     private User teamHead;
+
+    public void addUser(User user){
+        students.add(user);
+        user.setTeam(this);
+    }
 
 }
