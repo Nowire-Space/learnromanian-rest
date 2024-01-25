@@ -1,5 +1,6 @@
 package nowire.space.learnromanian.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import nowire.space.learnromanian.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
@@ -42,5 +43,10 @@ public class BeansConfiguration {
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }
