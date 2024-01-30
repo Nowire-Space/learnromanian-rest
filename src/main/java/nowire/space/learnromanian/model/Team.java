@@ -3,6 +3,8 @@ package nowire.space.learnromanian.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Builder
@@ -24,8 +26,8 @@ public class Team {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "team", orphanRemoval = true)
-    private Set<User> students;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "team", fetch = FetchType.EAGER)
+    private List<User> students;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
@@ -34,6 +36,11 @@ public class Team {
     public void addUser(User user){
         students.add(user);
         user.setTeam(this);
+    }
+
+    public void removeUser (User user){
+        students.remove(user);
+        user.setTeam(null);
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -58,7 +59,7 @@ public class User implements UserDetails{
     @Column(name="user_activated")
     protected boolean userActivated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
     protected Team team;
 

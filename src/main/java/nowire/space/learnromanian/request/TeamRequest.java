@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nowire.space.learnromanian.model.User;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,7 +24,7 @@ public class TeamRequest {
     @NotBlank
     @Size(min = 2, max = 20)
     private String description;
-    private Set<User> students;
+    private List<User> students;
 
 }
 
