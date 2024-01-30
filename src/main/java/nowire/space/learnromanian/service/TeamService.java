@@ -1,6 +1,7 @@
 package nowire.space.learnromanian.service;
 
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -26,7 +28,7 @@ public class TeamService {
 
     private final UserRepository userRepository;
 
-    private Set<User> users;
+    private List<User> users;
 
     @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
@@ -44,6 +46,7 @@ public class TeamService {
             }
 
     }
+    @Transactional
     @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> addStudent(String username, String teamName) {
         Team team = teamRepository.findByName(teamName);
@@ -55,16 +58,15 @@ public class TeamService {
             team.getStudents().forEach(user1 -> log.info("The team has following users {}", user1.getUserFamilyName()));
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         } else if (user != null) {
-            users.add(user);
-            team.setStudents(users);
+            team.addUser(user);
             teamRepository.save(team);
-            team.getStudents();
             return new ResponseEntity<>(Message.USER_ADDED_TO_THE_TEAM(username), HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @Transactional
     @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
     public ResponseEntity<String> removeStudent(String username, String teamName){
         Team team = teamRepository.findByName(teamName);

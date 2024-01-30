@@ -132,11 +132,24 @@ public class TeamStepDefinitions {
                 .userEnabled(true)
                 .userActivated(true)
                 .build();
-
         User savedAdminUser = userRepository.save(adminUser);
         User savedProfessorUser = userRepository.save(professorUser);
         log.info("Saved users {}, {} with role {}, {} to the H2 DB.", savedAdminUser.getUserEmail(), savedProfessorUser.getUserEmail(),
                 savedAdminUser.getRole().getRoleName(), savedProfessorUser.getRole().getRoleName());
+    }
+
+    @And("^active team user with (.*), (.*), (.*), (.*), (.*)$")
+    public void activeTeamUserWith(String userFamilyName, String userFirstName, String userPhoneNumber, String userEmail, String userPassword) {
+        User user = User.builder().userFamilyName(userFamilyName)
+                .userFirstName(userFirstName)
+                .userPhoneNumber(userPhoneNumber)
+                .userEmail(userEmail)
+                .userPassword(userPassword)
+                .userEnabled(true)
+                .userActivated(true)
+                .role(roleRepository.findByRoleId(4))
+                .build();
+        userRepository.save(user);
     }
 
     @When("^team admin proceeds with log in with (.*) and (.*)$")
@@ -175,84 +188,6 @@ public class TeamStepDefinitions {
         log.info("Admin created new team: {}.", teamName);
     }
 
-
-    @Given("^team registration request with (.*) and (.*)$")
-    public void teamRegistrationRequestWithAnd(String name, String description) {
-        Set <User> users = new HashSet<>();
-        teamRequest = TeamRequest.builder().name(name).description(description).students(users).build();
-        log.info("team with {} was created", name);
-    }
-
-    @And("^active and enabled user with (.*), (.*), (.*), (.*) and (.*)$")
-    public ResponseEntity<String> save_user (String userFamilyName, String userFirstName, String phoneNumber, String email,
-                                     String password) {
-       User user = User.builder().userFamilyName(userFamilyName)
-               .userFirstName(userFirstName)
-               .userPhoneNumber(phoneNumber)
-               .userEmail(email)
-               .userPassword(encoder.encode(password))
-               .userActivated(true)
-               .userEnabled(true)
-               .role(roleRepository.findByRoleId(3))
-               .build();
-       userRepository.save(user);
-
-       return new ResponseEntity<>("The user with the role" + user.getRole() + "username" + user.getUserFamilyName()+ "is saved in DB",HttpStatus.OK);
-    }
-
-    @And("^active and enabled student with (.*), (.*), (.*), (.*) and (.*)$")
-    public ResponseEntity<String> saveStudent(String studentFamilyName, String studentFirstName, String studentPhoneNumber, String studentEmail, String studentPassword) {
-        User student = User.builder().userFamilyName(studentFamilyName)
-                .userFirstName(studentFirstName)
-                .userPhoneNumber(studentPhoneNumber)
-                .userEmail(studentEmail)
-                .userPassword(encoder.encode(studentPassword))
-                .userActivated(true)
-                .userEnabled(true)
-                .role(roleRepository.findByRoleId(4))
-                .build();
-        userRepository.save(student);
-
-        return new ResponseEntity<>("The student with the role" + student.getRole() + "username" + student.getUserFamilyName()+ "is saved in DB",HttpStatus.OK);
-
-
-    }
-    @When("^user submit POST team request for team creation !")
-    @WithMockUser(username = "john.doe@mail.com")
-    public void teamCreation () throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/team/create")
-//                        .header("Access-Control-Request-Method", "POST")
-//                        .header("Origin",webAppUrl)
-                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
-                        .content(objectMapper.writeValueAsString(teamRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$")
-                        .value(Message.TEAM_CREATED(teamRequest.getName(),teamRequest.getDescription())));
-                log.info("POST request was submitted for team name: {}  and team description: {}.", teamRequest.getName(), teamRequest.getDescription());
-    }
-
-    @Then("^student (.*) is added to the team (.*).$")
-    public void userIsAddedToTheTeam(String studentEmail, String name) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/team/addStudent/{username}/{teamName}", studentEmail, name).header("Access-Control-Request-Method", "POST")
-                        .header("Origin",webAppUrl)
-                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
-                        .content(objectMapper.writeValueAsString(teamRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_ADDED_TO_THE_TEAM(studentEmail)));
-        log.info("Student with the Family Name : {} and First Name: {} was added to the team  {} ", userRepository.findByUserEmail(studentEmail).get().getUserFamilyName()
-                ,userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamRequest.getDescription());
-    }
-
-    @And("^user with the email address (.*) added to the team (.*).")
-    public void userWithTheEmailAddressAddedToTheTeam(String username, String name) throws Exception {
-        User user = userRepository.findByUserEmail(username).get();
-        Team team = Team.builder().name(teamRequest.getName()).description(teamRequest.getDescription()).students(teamRequest.getStudents()).build();
-        team.setStudents(Set.of(user));
-        teamRepository.save(team);
-    }
-
     @And("^user make a delete request for the username (.*) from the team (.*)")
     public void userMakeADeleteRequestForTheUsernameFromTheTeam(String studentEmail, String name) throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/team/remove/{username}/{teamName}", studentEmail, name).header("Access-Control-Request-Method", "DELETE")
@@ -280,5 +215,39 @@ public class TeamStepDefinitions {
         log.info("Assertion passed !" + teamCreated.getDescription() + teamCreated.getName() + teamCreated.getTeamHead().getUserEmail());
 
     }
+
+    @When("^admin user submits POST team request for removing the user (.*) from the team (.*)$")
+    public void adminUserSubmitsPOSTTeamRequestForRemovingTheUserFromTheTeam(String professorEmail, String teamName) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/team/remove/{username}/{teamName}", professorEmail, teamName).header("Access-Control-Request-Method", "DELETE")
+                        .header("Origin", webAppUrl)
+                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
+                        .content(objectMapper.writeValueAsString(teamRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_REMOVED_FROM_THE_TEAM(professorEmail)));
+    }
+
+    @Then("^user (.*) is removed from the team (.*)$")
+    public void userIsRemovedFromTheTeam(String studentEmail, String teamName) {
+        Team team = teamRepository.findByName(teamName);
+        User user = userRepository.findByUserEmail(studentEmail).get();
+        team.getStudents().contains(user);
+        assertThat(team.getStudents().contains(user)).isFalse();
+        log.info("Assertions passed.");
+    }
+
+    @And("^student (.*) is added to the team (.*).$")
+    public void userIsAddedToTheTeam(String studentEmail, String teamName) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/team/addStudent/{username}/{teamName}", studentEmail, teamName).header("Access-Control-Request-Method", "POST")
+                        .header("Origin",webAppUrl)
+                        .with(user("john.doe@mail.com").roles("PROFESSOR"))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(Message.USER_ADDED_TO_THE_TEAM(studentEmail)));
+        log.info("Student with the Family Name : {} and First Name: {} was added to the team  {} ", userRepository.findByUserEmail(studentEmail).get().getUserFamilyName()
+                ,userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamName);
+    }
+
+
 }
 
