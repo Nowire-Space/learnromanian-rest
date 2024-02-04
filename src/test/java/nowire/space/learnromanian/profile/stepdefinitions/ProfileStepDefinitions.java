@@ -1,8 +1,9 @@
-package nowire.space.learnromanian.stepdefinitions;
+package nowire.space.learnromanian.profile.stepdefinitions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -25,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -130,5 +130,11 @@ public class ProfileStepDefinitions {
         } else {
             log.error("Data is wrong returned");
         }
+    }
+
+    @After
+    public void clearDb() {
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 }

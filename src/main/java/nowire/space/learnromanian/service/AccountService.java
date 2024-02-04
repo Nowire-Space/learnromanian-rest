@@ -93,7 +93,6 @@ public class AccountService {
                 .toString();
     }
 
-    @RolesAllowed({"MODERATOR", "PROFESSOR"})
     public ResponseEntity<User> getUserProfile(String username) {
        User user =  userRepository.findByUserEmail(username).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
        log.info("USER ROLE is {}", user.getRole().getRoleName() );
