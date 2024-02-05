@@ -1,6 +1,5 @@
-package nowire.space.learnromanian.stepdefinitions;
+package nowire.space.learnromanian.team.stepdefinitions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.mailjet.client.errors.MailjetException;
@@ -18,7 +17,6 @@ import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.TeamRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
-import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.request.TeamRequest;
 import nowire.space.learnromanian.service.EmailService;
 import nowire.space.learnromanian.util.Enum;
@@ -31,16 +29,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.util.MultiValueMap;
 
 import java.util.*;
 
@@ -90,6 +84,8 @@ public class TeamStepDefinitions {
 
     @Before("@Team")
     public void setUp() throws MailjetException {
+                userRepository.deleteAll();
+        roleRepository.deleteAll();
         objectMapper = new ObjectMapper();
 
         List<Role> roles = new ArrayList<>();
@@ -247,7 +243,6 @@ public class TeamStepDefinitions {
         log.info("Student with the Family Name : {} and First Name: {} was added to the team  {} ", userRepository.findByUserEmail(studentEmail).get().getUserFamilyName()
                 ,userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamName);
     }
-
 
 }
 

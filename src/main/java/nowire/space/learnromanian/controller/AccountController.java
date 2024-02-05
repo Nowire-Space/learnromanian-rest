@@ -47,10 +47,11 @@ public class AccountController {
         return accountService.getUserProfile(username);
 
     }
+
     @GetMapping
     public Page<User> get(@RequestParam int page, @RequestParam int rowsPerPage, @RequestParam(required = false,
             defaultValue = "userFamilyName") String sortBy,
-                          @RequestParam(required = false, defaultValue = "false") boolean desc){
+                          @RequestParam(required = false, defaultValue = "false") boolean desc) {
         return accountService.getAll(page, rowsPerPage, sortBy, desc);
     }
 }

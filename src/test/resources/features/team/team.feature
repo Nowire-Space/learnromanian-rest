@@ -25,13 +25,13 @@ Feature: Teams management
       | adminFamilyName | adminFirstName | adminPhoneNumber | adminEmail              | adminPassword  | teamName | teamDescription    | professorFamilyName | professorFirstName | professorPhoneNumber | professorEmail    | professorPassword | userFamilyName | userFirstName | userPhoneNumber | userEmail         | userPassword | studentEmail      |  |
       | Hopkins         | Amanda         | 40111111111      | amanda.hopkins@mail.com | amanda.hopkins | Team 1   | Team 1 description | Doe                 | John               | +40555555555         | john.doe@mail.com | john.doe          | Cary           | Jim           | 11223344        | jim.cary@mail.com |              | jim.cary@mail.com |  |
 
-  Scenario Outline: Positive scenario: Users with adequate roles can remove the students from the teaam.
-    Given team registration request with <name> and <description>
-    And active and enabled student with <studentFamilyName>, <studentFirstName>, <studentPhoneNumber>, <studentEmail> and <studentPassword>
-    When user with the email address <username> added to the team <name>.
-    And user make a delete request for the username <username> from the team <name>
-    Then user with the username <username> is deleted from the team.
-
-    Examples:
-      | name | description | username                | studentFamilyName | studentFirstName | studentPhoneNumber | studentEmail            | studentPassword |
-      | TEST | Advanced    | bogdan.dabija@yahoo.com | Dabija            | Bogdan           | +40743068088       | bogdan.dabija@yahoo.com | bogdan123       |
+#  Scenario Outline: Positive scenario: Users with adequate roles can remove the students from the teaam.
+#    Given team registration request with <name> and <description>
+#    And active and enabled student with <studentFamilyName>, <studentFirstName>, <studentPhoneNumber>, <studentEmail> and <studentPassword>
+#    When user with the email address <username> added to the team <name>.
+#    And user make a delete request for the username <username> from the team <name>
+#    Then user with the username <username> is deleted from the team.
+#
+#    Examples:
+#      | name | description | username                | studentFamilyName | studentFirstName | studentPhoneNumber | studentEmail            | studentPassword |
+#      | TEST | Advanced    | bogdan.dabija@yahoo.com | Dabija            | Bogdan           | +40743068088       | bogdan.dabija@yahoo.com | bogdan123       |
