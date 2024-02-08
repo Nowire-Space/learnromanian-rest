@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ExamRepository extends JpaRepository<Exam, Integer> {
     Exam findByName(String name);
     void deleteByName(String name);
+
+
 }

@@ -1,5 +1,9 @@
 package nowire.space.learnromanian.util;
 
+import nowire.space.learnromanian.request.ScheduleExamRequest;
+
+import java.time.LocalDateTime;
+
 public class Message {
     public static String USER_AUTHENTICATION_TRUE = "User is authenticated.";
     public static String USER_AUTHENTICATION_FALSE = "User is NOT authenticated.";
@@ -93,4 +97,5 @@ public class Message {
     public static String EXAM_FAIL_DELETE(String examName){
         return "The exam: ".concat(examName) + "is not existing !";
     }
+
 }

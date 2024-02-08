@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,5 +27,8 @@ public class Exam {
 
     @Column(name = "name")
     protected String name;
+
+    @Column(name = "scheduled_exam")
+    protected LocalDateTime scheduleExam;
 
 }
