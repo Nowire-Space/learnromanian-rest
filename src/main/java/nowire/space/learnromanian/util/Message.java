@@ -77,4 +77,20 @@ public class Message {
     public static String TEAM_CREATED(String name, String description){
         return "Team with the name".concat(name).concat(" and description ").concat(description).concat("was created!");
     }
+
+    public static String EXAM_CREATED(String examName, String teamName){
+        return "The exam: ".concat(examName) + "was successfully created for the team ".concat(teamName);
+    }
+
+    public static String EXAM_FAIL_CREATION(String examName, String teamName){
+        return "The exam: ".concat(examName) + "failed to be created for the team ".concat(teamName);
+    }
+
+    public static String EXAM_DELETED(String examName){
+        return "The exam: ".concat(examName) + "was successfully deleted !";
+    }
+
+    public static String EXAM_FAIL_DELETE(String examName){
+        return "The exam: ".concat(examName) + "is not existing !";
+    }
 }

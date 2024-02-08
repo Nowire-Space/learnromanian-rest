@@ -11,9 +11,11 @@ import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.TeamRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.TeamRequest;
+import nowire.space.learnromanian.util.Enum;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +32,7 @@ public class TeamService {
 
     private List<User> users;
 
-    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
             if (teamRequest != null) {
                 Team newTeam = (teamRepository.findByName(teamRequest.getName()) != null) ? teamRepository.findByName(teamRequest.getName())
@@ -47,7 +49,7 @@ public class TeamService {
 
     }
     @Transactional
-    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> addStudent(String username, String teamName) {
         Team team = teamRepository.findByName(teamName);
         User user = userRepository.findByUserEmail(username).get();
@@ -67,7 +69,7 @@ public class TeamService {
         }
     }
     @Transactional
-    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> removeStudent(String username, String teamName){
         Team team = teamRepository.findByName(teamName);
         User user = userRepository.findByUserEmail(username).get();
@@ -79,7 +81,7 @@ public class TeamService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @RolesAllowed({"ADMIN", "MODERATOR", "PROFESSOR"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> move(String username, String actualTeamName, String newTeamName) {
        Team actualTeam = teamRepository.findByName(actualTeamName);
        Team newTeam = teamRepository.findByName(newTeamName);
