@@ -3,6 +3,7 @@ package nowire.space.learnromanian.service;
 import jakarta.annotation.Nonnull;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import nowire.space.learnromanian.model.Exam;
 import nowire.space.learnromanian.model.Team;
 import nowire.space.learnromanian.repository.ExamRepository;

@@ -28,5 +28,4 @@ public class ExamController {
     public ResponseEntity<String> reScheduleExam(@PathVariable String examName, @RequestBody ScheduleExamRequest scheduleExamRequest){
         return examService.reScheduleExam(examName, scheduleExamRequest);
     }
-
 }
