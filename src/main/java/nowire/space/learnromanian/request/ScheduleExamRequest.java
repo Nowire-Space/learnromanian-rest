@@ -4,16 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleExamRequest {
+    @Range(min = 2024, max = 2100)
     private Integer year;
+    @Range(min = 1, max = 12)
     private Integer month;
+    @Range(min = 1, max = 31)
     private Integer dayOfMonth;
+    @Range(min = 0, max = 24)
     private Integer hour;
+    @Range(min = 1, max = 60)
     private Integer minute;
 
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,7 +21,6 @@ public class Exam {
     @Column(name = "exam_id")
     protected Integer examId;
 
-
     @OneToOne
     @JoinColumn(name = "team_id")
     protected Team team;
@@ -30,5 +30,9 @@ public class Exam {
 
     @Column(name = "scheduled_exam")
     protected LocalDateTime scheduleExam;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "exercise_id")
+    protected Exercise exercise;
 
 }
