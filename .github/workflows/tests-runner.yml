@@ -16,4 +16,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Run tests using Maven
-        run: /opt/apache-maven-3.6.3/bin/mvn test -DSECRET_KEY=${{ secrets.SECRET_KEY }} -DRUNNING_PORT=${{ vars.RUNNING_PORT }} -DEMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} -DEMAIL_API_SECRET=${{ secrets.EMAIL_API_SECRET }} -DEMAIL_SENDER=${{ secrets.EMAIL_SENDER }} -DEMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}
+        run: /opt/apache-maven-3.6.3/bin/mvn test -DSECRET_KEY=${{ secrets.SECRET_KEY }} -DRUNNING_PORT=${{ vars.RUNNING_PORT }} -DEMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} -DEMAIL_API_SECRET=${{ secrets.EMAIL_API_SECRET }} -DEMAIL_SENDER=${{ secrets.EMAIL_SENDER }} -DEMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }} -DWEBAPP_URL=${{ secrets.WEBAPP_URL }}
