@@ -26,3 +26,11 @@ jobs:
         with:
           name: Serenity Report
           path: target/site/serenity/
+      - name: Copy Serenity report for deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.ROOT_USERNAME }}
+          password: ${{ secrets.ROOT_PASSWORD }}
+          port: ${{ secrets.HOST_PORT }}
+          script: rm -r /var/www/reports.learnromanian.nowire.space/public_html/serenity && cp -a /home/deployer/actions-runner/_work/learnromanian-rest/learnromanian-rest/target/site/serenity/ /var/www/reports.learnromanian.nowire.space/public_html/ && chown -R www-data:www-data /var/www/reports.learnromanian.nowire.space/public_html/serenity
