@@ -27,6 +27,7 @@ jobs:
           name: Serenity Report
           path: target/site/serenity/
       - name: Copy Serenity report for deployment
+        if: always()
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.HOST }}
