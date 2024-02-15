@@ -24,7 +24,7 @@ Feature: Registration
 
     Examples:
       | userFamilyName | userFirstName | phoneNumber  | email             | password | responseCode |
-      | Doe            | John          | +40555555555 | john.doe@mail.com | john.doe | 300          |
+      | Doe            | John          | +40555555555 | john.doe@mail.com | john.doe | 200          |
 
   Scenario Outline: Positive Scenario: User submits POST request with registration body, data is saved to DB. Admin rejects registration request.
     Given user registration request with following: <userFamilyName>, <userFirstName>, <phoneNumber>, <email> and <password>
