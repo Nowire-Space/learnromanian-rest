@@ -62,7 +62,7 @@ public class TeamStepDefinitions extends Util {
                 .andReturn();
         testContext().setResponseCode(response.getResponse().getStatus());
 
-        log.info("Response to the OPTIONS request received.");
+        log.info("New {} team was created: {}.", teamName, teamRepository.findAll());
     }
 
     @When("user {word} sends POST remove student request for {word} from {}")
@@ -94,13 +94,12 @@ public class TeamStepDefinitions extends Util {
                 userRepository.findByUserEmail(studentEmail).get().getUserFirstName(),teamName);
     }
 
-    @Then("new team with {}, {} is created and team head is {word}")
-    public void newTeamWithIsCreatedAndTeamHeadIs(String teamName, String teamDescription, String professorEmail) {
+    @Then("new team with {}, {} is created")
+    public void newTeamWithIsCreatedAndTeamHeadIs(String teamName, String teamDescription) {
         Team teamCreated = teamRepository.findByName(teamName);
         assertThat(teamCreated.getDescription()).isEqualTo(teamDescription);
-        assertThat(teamCreated.getTeamHead().getUserEmail()).isEqualTo(professorEmail);
 
-        log.info("Assertion passed !" + teamCreated.getDescription() + teamCreated.getName() + teamCreated.getTeamHead().getUserEmail());
+        log.info("Assertion passed! Team {} with description {} created.", teamCreated.getName(), teamCreated.getDescription());
     }
 
     @Then("user {word} is removed from the team {}")

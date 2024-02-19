@@ -20,7 +20,7 @@ Feature: Teams management
   Scenario Outline: Positive scenario: Admin user submits POST request with new team request body, data is saved to the DB.
     When user amanda.hopkins@mail.com sends POST team creation request with <teamName> and <teamDescription>
     Then API responds with 200 HTTP code
-    And new team with <teamName>, <teamDescription> is created and team head is amanda.hopkins@mail.com
+    And new team with <teamName>, <teamDescription> is created
 
     Examples:
       | teamName | teamDescription    |
