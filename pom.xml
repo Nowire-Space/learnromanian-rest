@@ -182,8 +182,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M5</version>
 				<configuration>
-					<argLine>-Xshare:off</argLine>
-					<parallel>all</parallel>
 					<includes>
 						<include>**/*Test*.java</include>
 					</includes>
@@ -193,7 +191,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>3.2.5</version>
 				<configuration>
-					<argLine>-Xshare:off</argLine>
 					<includes>
 						<include>**/*Test.java</include>
 						<include>**/Test*.java</include>
