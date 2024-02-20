@@ -5,8 +5,10 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import nowire.space.learnromanian.model.Exam;
+import nowire.space.learnromanian.model.Exercise;
 import nowire.space.learnromanian.model.Team;
 import nowire.space.learnromanian.repository.ExamRepository;
+import nowire.space.learnromanian.repository.ExerciseRepository;
 import nowire.space.learnromanian.repository.TeamRepository;
 import nowire.space.learnromanian.request.ScheduleExamRequest;
 import nowire.space.learnromanian.util.Enum;
@@ -26,12 +28,14 @@ public class ExamService {
 
     private TeamRepository teamRepository;
     private ExamRepository examRepository;
+    private ExerciseRepository exerciseRepository;
 
     @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
-    public ResponseEntity<String> createExam(@Nonnull String teamName, @Nonnull String examName, ScheduleExamRequest scheduleExamRequest) {
+    public ResponseEntity<String>  createExam(@Nonnull String teamName, @Nonnull String examName,@Nonnull String exerciseName, ScheduleExamRequest scheduleExamRequest) {
        Team team = teamRepository.findByName(teamName);
+       Exercise exercise = exerciseRepository.findByName(exerciseName);
        if(team != null) {
-           Exam exam = Exam.builder().team(team).name(examName).scheduleExam(LocalDateTime.of(scheduleExamRequest.getYear()
+           Exam exam = Exam.builder().team(team).name(examName).exercise(exercise).scheduleExam(LocalDateTime.of(scheduleExamRequest.getYear()
                    ,scheduleExamRequest.getMonth(),scheduleExamRequest.getDayOfMonth(), scheduleExamRequest.getHour(), scheduleExamRequest.getMinute()
            ,0,0)).build();
            examRepository.save(exam);

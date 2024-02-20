@@ -25,13 +25,13 @@ public class Exam {
     @JoinColumn(name = "team_id")
     protected Team team;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     protected String name;
 
     @Column(name = "scheduled_exam")
     protected LocalDateTime scheduleExam;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "exercise_id")
     protected Exercise exercise;
 

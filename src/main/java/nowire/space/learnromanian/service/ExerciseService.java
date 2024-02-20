@@ -29,8 +29,8 @@ public class ExerciseService {
 
     }
 
-    public ResponseEntity<String> getExercise(String name){
-         String exercise = exerciseRepository.findByName(name).getExerciseType().getExercise();
-         return new ResponseEntity<>(exercise,HttpStatus.OK);
-    }
+//    public ResponseEntity<String> getExercise(String name){
+//         String exercise = exerciseRepository.findByName(name).getExerciseType().getExercise();
+//         return new ResponseEntity<>(exercise,HttpStatus.OK);
+//    }
 }

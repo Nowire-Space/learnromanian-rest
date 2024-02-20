@@ -24,8 +24,8 @@ public class ExerciseController {
         return new ResponseEntity<>("deleteTest", HttpStatus.OK);
     }
 
-    @GetMapping ("/get/{name}")
-    public ResponseEntity<String> getExercise(@PathVariable String name){
-        return exerciseService.getExercise(name);
-    }
+//    @GetMapping ("/get/{name}")
+//    public ResponseEntity<String> getExercise(@PathVariable String name){
+//        return exerciseService.getExercise(name);
+//    }
 }

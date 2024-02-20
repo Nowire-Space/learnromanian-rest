@@ -14,10 +14,9 @@ public class ExamController {
 
     private ExamService examService;
 
-    @PostMapping(value ={"/create/{teamName}", "/create/{teamName}/{examName}"})
-    public ResponseEntity<String> createExam(@PathVariable String teamName, @PathVariable String examName, @RequestBody ScheduleExamRequest scheduleExamRequest){
-
-        return examService.createExam(teamName, examName, scheduleExamRequest);
+    @PostMapping(value ={"/create/{teamName}", "/create/{teamName}/{examName}", "/create/{teamName}/{examName}/{exerciseName}"})
+    public ResponseEntity<String> createExam(@PathVariable String teamName, @PathVariable String examName, @PathVariable String exerciseName, @RequestBody ScheduleExamRequest scheduleExamRequest){
+        return examService.createExam(teamName, examName, exerciseName, scheduleExamRequest);
     }
     @PostMapping("/delete/{examName}")
     public ResponseEntity<String> deleteExam(@PathVariable String examName){
