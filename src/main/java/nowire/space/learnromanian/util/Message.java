@@ -21,6 +21,7 @@ public class Message {
 
     public static String WRONG_EMAIL_ADDRESS = "Your email address is not valid or the user is not registered!";
 
+    public static String TEAM_ADDED_USER = "The user is added to the team ! ";
 
     public static String USER_REGISTRATION_TRUE(String firstName, String familyName, String email) {
         return "Account for ".concat(firstName).concat(" ").concat(familyName).concat(" with email ")
@@ -58,5 +59,22 @@ public class Message {
 
     public static String USER_NOT_ACTIVATED(Integer id) {
         return "User with id ".concat(id.toString()).concat(" is not activated or not enabled!");
+    }
+
+    public static String USER_ADDED_TO_THE_TEAM(String username){
+        return "User with the email ".concat(username).concat(" was added to the team");
+    }
+
+    public static String USER_REMOVED_FROM_THE_TEAM(String username){
+        return "User with the email ".concat(username).concat(" was removed from the team");
+    }
+
+    public static String USER_MOVED_TO_OTHER_TEAM (String username, String actualTeam, String newTeam){
+        return "User with the email ".concat(username).concat(" was moved from the team ").concat(actualTeam).concat(" to the team ").concat(newTeam);
+    }
+
+
+    public static String TEAM_CREATED(String name, String description){
+        return "Team with the name".concat(name).concat(" and description ").concat(description).concat("was created!");
     }
 }

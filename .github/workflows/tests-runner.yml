@@ -16,4 +16,22 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Run tests using Maven
-        run: /opt/apache-maven-3.9.2/bin/mvn test -DSECRET_KEY=${{ secrets.SECRET_KEY }} -DRUNNING_PORT=${{ vars.RUNNING_PORT }} -DEMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} -DEMAIL_API_SECRET=${{ secrets.EMAIL_API_SECRET }} -DEMAIL_SENDER=${{ secrets.EMAIL_SENDER }} -DEMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }}
+        run: /opt/apache-maven-3.6.3/bin/mvn clean verify -DSECRET_KEY=${{ secrets.SECRET_KEY }} -DRUNNING_PORT=${{ vars.RUNNING_PORT }} -DEMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} -DEMAIL_API_SECRET=${{ secrets.EMAIL_API_SECRET }} -DEMAIL_SENDER=${{ secrets.EMAIL_SENDER }} -DEMAIL_SENDER_NAME=${{ secrets.EMAIL_SENDER_NAME }} -DWEBAPP_URL=${{ secrets.WEBAPP_URL }} -DVERIFICATION_TOKEN_EXPIRATION_MINUTES=${{ secrets.VERIFICATION_TOKEN_EXPIRATION_MINUTES }}
+      - name: Generate Serenity report
+        if: always()
+        run: /opt/apache-maven-3.6.3/bin/mvn serenity:aggregate
+      - name: Upload Serenity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Serenity Report
+          path: target/site/serenity/
+      - name: Copy Serenity report for deployment
+        if: always()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.ROOT_USERNAME }}
+          password: ${{ secrets.ROOT_PASSWORD }}
+          port: ${{ secrets.HOST_PORT }}
+          script: rm -r /var/www/reports.learnromanian.nowire.space/public_html/serenity && cp -a /home/deployer/actions-runner/_work/learnromanian-rest/learnromanian-rest/target/site/serenity/ /var/www/reports.learnromanian.nowire.space/public_html/ && chown -R www-data:www-data /var/www/reports.learnromanian.nowire.space/public_html/serenity

@@ -1,6 +1,5 @@
 package nowire.space.learnromanian.service;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import nowire.space.learnromanian.model.Role;
@@ -8,13 +7,14 @@ import nowire.space.learnromanian.model.User;
 import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.UserEnableRequest;
+import nowire.space.learnromanian.util.Enum;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class AdminService {
 
     private final RoleRepository roleRepository;
 
-    @RolesAllowed({"ADMIN"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> enableAccount(UserEnableRequest request) {
         Optional<User> requestedUser = userRepository.findByUserId(request.getUserId());
         if (requestedUser.isPresent()) {
@@ -43,7 +43,7 @@ public class AdminService {
         }
     }
 
-    @RolesAllowed("ADMIN")
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     @Transactional
     public ResponseEntity<String> rejectAccount(String userId) {
         Integer deletedCount = userRepository.deleteByUserId(Integer.valueOf(userId));
