@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;NON_KEYWORDS=USER;MODE=MySQL
+    username: sa
+    password: sa
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: never
+authentication:
+  token:
+    secret: ${SECRET_KEY}
+registration:
+  validation-token:
+    expiration: ${VERIFICATION_TOKEN_EXPIRATION_MINUTES}
+email:
+  from:
+    address: ${EMAIL_SENDER}
+    name: ${EMAIL_SENDER_NAME}
+  api:
+    key: ${EMAIL_API_KEY}
+    secret: ${EMAIL_API_SECRET}
+webapp:
+  url: ${WEBAPP_URL}

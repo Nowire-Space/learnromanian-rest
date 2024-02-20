@@ -17,7 +17,6 @@ import nowire.space.learnromanian.repository.RoleRepository;
 import nowire.space.learnromanian.repository.UserRepository;
 import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.util.Enum;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,6 +56,7 @@ public class ProfileStepDefinitions {
 
     private User user;
 
+    @Autowired
     private ObjectMapper objectMapper;
 
     private String bearerToken;
@@ -65,7 +65,6 @@ public class ProfileStepDefinitions {
 
     @Before("@Profile")
     public void setUp() {
-        objectMapper = new ObjectMapper();
         List<Role> roles = new ArrayList<>();
         roles.add(new Role(1, Enum.Role.ADMIN));
         roles.add(new Role(2, Enum.Role.MODERATOR));
@@ -136,5 +135,7 @@ public class ProfileStepDefinitions {
     public void clearDb() {
         userRepository.deleteAll();
         roleRepository.deleteAll();
+
+        log.info("Deleted all users and roles from DB.");
     }
 }

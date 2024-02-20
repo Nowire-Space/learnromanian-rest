@@ -1,3 +1,4 @@
+@Security
 Feature: Authentication
   This feature file is created in order to test authentication security configuration
 
