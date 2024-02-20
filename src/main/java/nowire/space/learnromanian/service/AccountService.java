@@ -13,11 +13,13 @@ import nowire.space.learnromanian.request.LoginRequest;
 import nowire.space.learnromanian.request.PasswordResetRequest;
 import nowire.space.learnromanian.request.RegistrationRequest;
 import nowire.space.learnromanian.response.AuthenticationResponse;
+import nowire.space.learnromanian.util.Enum;
 import nowire.space.learnromanian.util.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -99,7 +101,7 @@ public class AccountService {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @RolesAllowed({"MODERATOR", "PROFESSOR"})
+    @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public Page<User> getAll(int page, int rowsPerPage, String sortBy, boolean desc){
         Sort sort = desc ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, rowsPerPage, sort);

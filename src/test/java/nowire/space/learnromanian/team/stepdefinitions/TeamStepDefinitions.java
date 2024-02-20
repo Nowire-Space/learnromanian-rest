@@ -70,7 +70,6 @@ public class TeamStepDefinitions extends Util {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders
                         .delete("/team/remove/{username}/{teamName}", studentEmail, teamName)
                         .header("authorization", "Bearer ".concat(testContext().getBearerToken().toString()))
-//                        .content(objectMapper.writeValueAsString(teamRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andReturn();
