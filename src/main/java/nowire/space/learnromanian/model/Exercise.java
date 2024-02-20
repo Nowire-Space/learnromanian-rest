@@ -3,6 +3,7 @@ package nowire.space.learnromanian.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+//TODO generalize this class to use with different exercise types(see GitHub project)
 @Data
 @Builder
 @AllArgsConstructor

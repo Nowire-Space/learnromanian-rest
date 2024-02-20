@@ -39,6 +39,7 @@ public class Exam {
     @Column(name = "scheduled_exam")
     protected LocalDateTime scheduleExam;
 
+    //TODO should be updated to OneToMany relation
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "exercise_id")
     protected Exercise exercise;
