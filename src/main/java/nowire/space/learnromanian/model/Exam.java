@@ -28,6 +28,7 @@ public class Exam {
     @Column(name = "exam_id")
     protected Integer examId;
 
+
     @OneToOne
     @JoinColumn(name = "team_id")
     protected Team team;
