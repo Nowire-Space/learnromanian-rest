@@ -1,10 +1,7 @@
 package nowire.space.learnromanian.service;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nowire.space.learnromanian.model.Team;
 import nowire.space.learnromanian.model.User;
@@ -17,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service

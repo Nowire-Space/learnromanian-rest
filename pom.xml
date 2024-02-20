@@ -79,6 +79,10 @@
 					<groupId>org.junit.vintage</groupId>
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -182,11 +186,10 @@
 						<include>**/*Test*.java</include>
 					</includes>
 				</configuration>
-
 			</plugin>
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.2.5</version>
 				<configuration>
 					<includes>
 						<include>**/*Test.java</include>

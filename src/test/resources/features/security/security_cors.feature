@@ -1,3 +1,4 @@
+@Security
 Feature: Cross-origin resource sharing
   This feature file is created in order to test Spring Security and CORS configuration
 
