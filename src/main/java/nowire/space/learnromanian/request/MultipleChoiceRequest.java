@@ -1,6 +1,7 @@
 package nowire.space.learnromanian.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -9,9 +10,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class ExerciseRequest {
+public class MultipleChoiceRequest extends ExerciseRequest {
 
-    protected String question;
-    protected String answer;
+    private String correctAnswer;
 
 }

@@ -1,7 +1,7 @@
 package nowire.space.learnromanian.controller;
 
 import lombok.AllArgsConstructor;
-import nowire.space.learnromanian.request.ExerciseRequest;
+import nowire.space.learnromanian.request.MultipleChoiceRequest;
 import nowire.space.learnromanian.service.ExerciseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ public class ExerciseController {
 
     private ExerciseService exerciseService;
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createExercise(@RequestBody ExerciseRequest exerciseRequest){
-        return exerciseService.createExercise(exerciseRequest);
+    @PostMapping("/createMCE")
+    public ResponseEntity<String> createMultipleChoiceExercise(@RequestBody MultipleChoiceRequest exerciseRequest){
+        return exerciseService.createMultipleChoiceExercise(exerciseRequest);
     }
 
     public ResponseEntity<String> deleteExercise(){

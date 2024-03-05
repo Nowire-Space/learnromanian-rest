@@ -1,29 +1,35 @@
 package nowire.space.learnromanian.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 //TODO generalize this class to use with different exercise types(see GitHub project)
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "exercise")
+@Table(name = "exercise_hierarchy")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name ="exercise_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("EXERCISE")
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exercise_id")
     private Integer exerciseId;
 
-    @Column(name = "name")
-    private String name;
+    @Size(max=250)
+    @Column(name = "question")
+    private String question;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "studentAnswers")
+    private String answer;
 
-    @Column(name = "exercise_type")
-    private ExerciseType exerciseType;
-
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "exam_id")
+    private Exam exam;
 
 }
