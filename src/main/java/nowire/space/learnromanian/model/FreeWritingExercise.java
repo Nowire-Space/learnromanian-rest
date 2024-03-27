@@ -1,5 +1,6 @@
 package nowire.space.learnromanian.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @DiscriminatorValue("free_writing")
 public class FreeWritingExercise extends Exercise{
     @Size(max = 500)
-    private String question;
+    @Column(name = "request")
+    private String request;
 
 }

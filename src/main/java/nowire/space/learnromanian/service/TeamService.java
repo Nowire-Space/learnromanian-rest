@@ -27,6 +27,7 @@ public class TeamService {
 
     private List<User> users;
 
+    @Transactional
     @Secured({Enum.Role.ADMIN, Enum.Role.MODERATOR, Enum.Role.PROFESSOR})
     public ResponseEntity<String> createTeam(TeamRequest teamRequest) {
             if (teamRequest != null) {

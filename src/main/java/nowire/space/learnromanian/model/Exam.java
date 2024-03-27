@@ -33,7 +33,12 @@ public class Exam {
     protected LocalDateTime scheduleExam;
 
     //TODO should be updated to OneToMany relation
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exam")
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "exam", fetch = FetchType.LAZY)
     protected List<Exercise> exercises;
+
+    public void addExercise(Exercise exercise){
+        exercises.add(exercise);
+        exercise.setExam(this);
+    }
 
 }

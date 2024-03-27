@@ -1,6 +1,8 @@
 package nowire.space.learnromanian.controller;
 
 import lombok.AllArgsConstructor;
+import nowire.space.learnromanian.request.ExerciseScheduleExamRequest;
+import nowire.space.learnromanian.request.IdExercisesRequest;
 import nowire.space.learnromanian.request.ScheduleExamRequest;
 import nowire.space.learnromanian.service.ExamService;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,12 @@ public class ExamController {
 
     private final ExamService examService;
 
-    @PostMapping(value ={"/create/{teamName}", "/create/{teamName}/{examName}"})
+    @PostMapping(value ={"/create/{teamName}", "/create/{teamName}/{examName}", "/create/{teamName}/{examName}"})
     public ResponseEntity<String> createExam(@PathVariable String teamName, @PathVariable String examName,
-                                             @RequestBody ScheduleExamRequest scheduleExamRequest) {
+                                             @RequestBody ExerciseScheduleExamRequest exerciseScheduleExamRequest) {
 
-        return examService.createExam(teamName, examName, scheduleExamRequest);
+        return examService.createExam(teamName, examName, exerciseScheduleExamRequest);
+
     }
 
     @PostMapping("/delete/{examName}")

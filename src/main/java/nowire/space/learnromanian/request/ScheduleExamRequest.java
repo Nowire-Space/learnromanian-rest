@@ -6,11 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleExamRequest {
+public class ScheduleExamRequest implements Serializable {
     @Range(min = 2024, max = 2100)
     private Integer year;
     @Range(min = 1, max = 12)
